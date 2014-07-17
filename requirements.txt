@@ -1,0 +1,5 @@
+# requirements for django-datafile
+
+django>=1.4
+django-model-utils>=2.0
+django-sendfile==0.3.6
