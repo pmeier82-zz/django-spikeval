@@ -1,0 +1,18 @@
+{% load i18n %}
+{% load bootstrap3 %}
+
+<form {% if form_id %}id="{{ form_id }}>"{% endif %} role="form" class="form-horizontal" method="post">
+  {% csrf_token %}
+  {% bootstrap_form form layout="horizontal" %}
+  <hr/>
+  {% buttons layout="horizontal" %}
+    <button type="submit" class="btn btn-primary">
+      {% bootstrap_icon "star" %}
+      {% trans "Submit" %}
+    </button>
+    <button type="reset" class="btn btn-default">
+      {% trans "Reset" %}
+    </button>
+    <a class="btn btn-default" href="{{ request.path|slice:":-7" }}">Cancel</a>
+  {% endbuttons %}
+</form>

@@ -1,0 +1,61 @@
+{% load i18n %}
+{% load bootstrap3 %}
+{% load fa_tags %}
+{% load spikeval_tags %}
+{% load pagination_tags %}
+{% load sorting_tags %}
+
+
+<form class="form-inline" method="GET">
+  <div class="input-group input-group-sm">
+    <span class="input-group-addon"><i class="fa fa-search"></i></span>
+    <input id="search" type="text" name="search" class="form-control"
+           value="{{ search_terms|default_if_none:"" }}"/>
+    <span class="input-group-btn">
+          <button type="submit" class="btn btn-default" value="Search">Search</button>
+      {% if search_terms %}
+        <a class="btn btn-default" onclick="$('#search').val('')">Clear</a>
+      {% endif %}
+    </span>
+  </div>
+</form>
+
+{% auto_sort object_list %}
+{% autopaginate object_list 2 %}
+<table class="table table-condensed table-bordered table-hover">
+  <thead>
+  <tr>
+    {% sort_th "Name" "name" %}
+    <th>{% trans "Version" %}</th>
+    {% sort_th "Owner" "owner" %}
+    {% sort_th "Date" "created" %}
+  </tr>
+  </thead>
+  <tbody>
+  {% for obj in object_list %}
+    <tr>
+      <td>
+        <a href="{{ obj.get_absolute_url }}">{{ obj.name }}</a>
+      </td>
+      <td>
+        {{ obj.version }}
+      </td>
+      <td>
+        {% fa_text obj.owner.username "user" link=obj.owner.get_absolute_url %}
+      </td>
+      <td>
+        {% fa_text obj.modified|date "clock-o" %}
+      </td>
+    </tr>
+  {% empty %}
+    <tr>
+      <td class="warning">There are no Algorithms available for this filter.</td>
+      <td class="warning"></td>
+      <td class="warning"></td>
+      <td class="warning"></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% paginate %}
+

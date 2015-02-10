@@ -1,0 +1,84 @@
+{% load i18n %}
+{% load bootstrap3 %}
+{% load fa_tags %}
+{% load spikeval_tags %}
+{% load pagination_tags %}
+{% load sorting_tags %}
+
+
+<form class="form-inline" method="GET">
+    <div class="input-group input-group-sm">
+        <span class="input-group-addon"><i class="fa fa-search"></i></span>
+        <input id="search" type="text" name="search" class="form-control"
+               value="{{ search_terms|default_if_none:"" }}"/>
+    <span class="input-group-btn">
+          <button type="submit" class="btn btn-default" value="Search">Search</button>
+        {% if search_terms %}
+            <a class="btn btn-default" onclick="$('#search').val('')">Clear</a>
+        {% endif %}
+    </span>
+    </div>
+</form>
+
+{% auto_sort object_list %}
+{% autopaginate object_list 2 %}
+<table class="table table-hover table-condensed">
+    <thead>
+    <tr>
+        {% sort_th "Name" "name" %}
+        {% sort_th "Owner" "owner" %}
+        {% sort_th "Date" "created" %}
+        <th>#</th>
+        <th>Description</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for obj in object_list %}
+        <tr>
+            <td>
+                {% if obj.is_public %}
+                    {% fa_text obj.name "eye" link=obj.get_absolute_url color="green" strong=True %}
+                {% else %}
+                    {% fa_text obj.name "eye-slash" link=obj.get_absolute_url color="red" strong=True %}
+                {% endif %}
+            </td>
+            <td>
+                {% fa_text obj.owner.username "user" link=obj.owner.get_absolute_url %}
+            </td>
+            <td>
+                {% fa_text obj.modified|date "clock-o" %}
+            </td>
+            <td>
+                <a href="{% url "evaluation:list" obj.id %}">{{ obj.batch_count }}</a>
+            </td>
+            <td>
+                {{ obj.description|truncatewords:11|escape }}
+            </td>
+            <td>
+                <div class="btn-group btn-group-xs pull-left">
+                    <a href="{% url "benchmark:download" obj.id %}"
+                       class="btn btn-default btn-xs">{% trans "download" %}</a>
+                    <a href="{% url "benchmark:summary" obj.id %}"
+                       class="btn btn-default btn-xs">{% trans "summary" %}</a>
+                    {% if obj|is_editable:user %}
+                        <a href="{% url "benchmark:toggle" obj.id %}"
+                           class="btn btn-default btn-xs">{% trans "toggle" %}</a>
+                        {% delete obj %}
+                    {% endif %}
+                </div>
+            </td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td class="warning">There are no Benchmarks available for this filter.</td>
+            <td class="warning"></td>
+            <td class="warning"></td>
+            <td class="warning"></td>
+            <td class="warning"></td>
+            <td class="warning"></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% paginate %}

@@ -2,7 +2,7 @@
 Django Spikeval
 ===============
 
-SDatafile is a simple Django app that adds generic file assets that
+Datafile is a simple Django app that adds generic file assets that
 can be referenced and used by other applications by generic foreign
 keys. The general `datafile` does not make any assumptions about the
 nature of the file and stores it in a filesystem backend.

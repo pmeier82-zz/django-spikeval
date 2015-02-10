@@ -1,0 +1,14 @@
+{% extends "djspikeval/algorithm/base.html" %}
+
+{% load i18n %}
+
+
+{% block title %}{% trans "Delete" %} {{ block.super }}: &quot;{{ object.name }}&quot;{% endblock %}
+
+{% block content %}
+  {% if user.is_authenticated %}
+    {% include "djspikeval/_delete.html" with form_id="delete-algorithm" %}
+  {% else %}
+    <p>NOT REGISTERED!</p>
+  {% endif %}
+{% endblock %}

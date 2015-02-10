@@ -1,0 +1,10 @@
+{% load i18n %}
+{% load bootstrap3 %}
+
+<form {% if form_id %}id="{{ form_id }}"{% endif %} method="post">
+  {% csrf_token %}
+  <p>Are you sure you want to delete "{{ object }}" ?</p>
+  <button class="btn btn-danger" type="submit" value="Submit">Delete</button>
+  <a class="btn btn-default" href="{{ request.path|slice:":-7" }}">Cancel</a>
+</form>
+

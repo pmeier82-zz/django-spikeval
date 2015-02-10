@@ -1,0 +1,42 @@
+{% extends "djspikeval/benchmark/base.html" %}
+
+{% load i18n %}
+{% load bootstrap3 %}
+{% load spikeval_tags %}
+
+
+{% block content %}
+  {#  {% if user.is_authenticated %}#}
+  {#    <section class="well well-sm">#}
+  {#      <div class="btn-group btn-group-sm input-group input-group-sm">#}
+  {#        <span class="input-group-addon">Actions:</span>#}
+
+  {#      </div>#}
+  {#      <form id="create-benchmark" role="form" class="form-horizontal form-actions" method="post"#}
+  {#            {% if not bm_form.errors %}style="display:none"{% endif %}>#}
+  {#        {% csrf_token %}#}
+  {#        {% bootstrap_form bm_form layout="horizontal" %}#}
+  {#        {% buttons submit="Create Benchmark" reset="Cancel" layout="horizontal" %}#}
+  {#          <input type="hidden" name="benchmark:create">#}
+  {#        {% endbuttons %}#}
+  {#      </form>#}
+  {#    </section>#}
+  {#  {% endif %}#}
+  {% if user.is_authenticated %}
+    <section class="well well-sm">
+      <div class="btn-group btn-group-sm input-group input-group-sm">
+        <span class="input-group-addon">Actions:</span>
+        <a class="btn btn-default" href="{% url "benchmark:create" %}">
+          <icon class="fa fa-plus-square-o"></icon>
+          {% trans "Create" %}
+        </a>
+      </div>
+    </section>
+  {% endif %}
+  <section>
+    <h3>Benchmark List
+      <small>public Benchmarks are listed here</small>
+    </h3>
+    {% include "djspikeval/benchmark/_list.html" %}
+  </section>
+{% endblock %}
