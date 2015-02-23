@@ -1,5 +1,7 @@
 # requirements for django-datafile
 
+Sp
+
 django>=1.7
 django-model-utils>=2.0
 django-taggit>=0.12
