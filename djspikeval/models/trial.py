@@ -2,36 +2,40 @@
 
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
 from model_utils.models import TimeStampedModel
 from model_utils import Choices
+from .signals import spike_validate_st, spike_validate_rd
 
-from djspikeval.signals import spike_validate_st, spike_validate_rd
 
 __all__ = ["Trial"]
 __author__ = "pmeier82"
 
 
 class Trial(TimeStampedModel):
-    """single data file
+    """data file handle for evaluation
 
-    This usually is a single set of extracellular data that a spike-sorting
-    algorithm can work on.
+    This represents a single set of extracellular data and ground truth
+    that a spike-sorting algorithm can be applied on.
 
-    A Trial consists of raw data and, (if applicable) the corresponding ground
-    truth for that raw data. Each is stored in separate files. Raw data is
-    generally accessible to the public, while the ground truth is generally
-    inaccessible to the public, but can be flagged as available to the public.
+    A `Trial` consists of raw data and (if applicable) the corresponding
+    ground truth for that raw data. Data and ground truth are stored in
+    separate files.
+    Raw data is generally accessible to the public, while the ground
+    truth is usually inaccessible to the public, but can be flagged
+    as available to the public.
 
     Raw data is stored in hdf5 format, ground truth is stored in gdf format.
     """
 
-    GT_TYPE = Choices("total", "partial", "none")
-    GT_ACCESS = Choices("private", "public")
-
     # meta
     class Meta:
         app_label = "djspikeval"
+        unique_together = (("benchmark", "parameter"),)
+        # TODO: does this really make sense?
+
+    # choices
+    GT_TYPE = Choices("total", "partial", "none")
+    GT_ACCESS = Choices("private", "public")
 
     # fields
     name = models.CharField(
@@ -74,15 +78,12 @@ class Trial(TimeStampedModel):
 
     # managers
     data_set = GenericRelation("djspikeval.Datafile")
+    attachment_set = GenericRelation("djspikeval.Attachment")
 
-    # special methods
-    def __str__(self):
-        return str(self.name)
-
+    # methods
     def __unicode__(self):
         return unicode(self.name)
 
-    # permanent urls
     @models.permalink
     def get_absolute_url(self):
         return "trial:detail", (self.pk,), {}
@@ -95,7 +96,6 @@ class Trial(TimeStampedModel):
     def get_validate_url(self):
         return "trial:validate", (self.pk,), {}
 
-    # interface
     @property
     def rd_file(self):
         try:
@@ -122,8 +122,10 @@ class Trial(TimeStampedModel):
 
     @property
     def is_valid_gt_file(self):
-        if not self.gt_file:
+        if self.gt_type == self.GT_TYPE.none:
             return True
+        if not self.gt_file:
+            return False
         if not self.valid_gt_log:
             return False
         if self.valid_gt_log.find("ERROR") >= 0:
@@ -139,7 +141,8 @@ class Trial(TimeStampedModel):
         return self.is_valid_rd_file and self.is_valid_gt_file
 
     def validate(self):
-        spike_validate_rd.send_robust(sender=self)
+        if self.rd_file:
+            spike_validate_rd.send_robust(sender=self)
         if self.gt_file:
             spike_validate_st.send_robust(sender=self)
 

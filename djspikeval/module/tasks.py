@@ -9,7 +9,7 @@ from django.utils import importlib
 
 from gnode_spike.celery.task import task
 from spikeval.datafiles import read_gdf_sts, read_hdf5_arc
-from spikeval.logging import Logger
+from spikeval.log import Logger
 from ..signals import spike_evaluation_run
 
 

@@ -10,7 +10,9 @@ from django.views.generic import CreateView, ListView, DetailView, UpdateView, D
 from djspikeval.forms import AlgorithmForm
 from djspikeval.util import render_to
 
-
+__all__ = [
+    "AlgorithmBaseView", "AlgorithmList", "AlgorithmCreate", "AlgorithmDetail",
+    "AlgorithmUpdate", "AlgorithmDelete"]
 __author__ = "pmeier82"
 
 Algorithm = apps.get_registered_model("djspikeval", "algorithm")

@@ -7,24 +7,21 @@ from django.utils.translation import ugettext_lazy as _
 from model_utils import Choices
 from model_utils.models import StatusModel, TimeStampedModel
 
-__all__ = ["Batch"]
+__all__ = ["Submission"]
 __author__ = "pmeier82"
 
 
-class Batch(StatusModel, TimeStampedModel):
-    """container for a set of evaluations submitted by a user"""
+class Submission(StatusModel, TimeStampedModel):
+    """container for a set of evaluations submitted by a user for one benchmark"""
 
-    ## meta
-
+    # meta
     class Meta:
         app_label = "djspikeval"
 
-    ## choices
-
+    # choices
     STATUS = Choices("private", "public")
 
-    ## fields
-
+    # fields
     description = models.TextField(
         blank=True,
         null=True)
@@ -40,19 +37,12 @@ class Batch(StatusModel, TimeStampedModel):
         "djspikeval.Benchmark",
         help_text="The Benchmark associated with this Batch.")
 
-    ## managers
+    # managers
+    attachment_set = GenericRelation("djspikeval.Attachment")
 
-    datafile_set = GenericRelation('djspikeval.Attachment')
-
-    ## special methods
-
-    def __str__(self):
-        return "#%s %s" % (self.pk, self.algorithm)
-
+    # methods
     def __unicode__(self):
-        return unicode(self.__str__())
-
-    ## django special methods
+        return "#{} {} @{}".format(self.pk, self.algorithm, self.benchmark)
 
     @models.permalink
     def get_absolute_url(self):
@@ -61,8 +51,6 @@ class Batch(StatusModel, TimeStampedModel):
     @models.permalink
     def get_delete_url(self):
         return "batch:delete", (self.pk,), {}
-
-    ## interface
 
     def toggle(self):
         if self.status == self.STATUS.public:

@@ -1,0 +1,11 @@
+{% load i18n %}
+
+{% spaceless %}
+  <a class="btn btn-default"
+     href="{{ href|default:"#" }}">
+    {% if icon %}
+      <icon class="fa fa-{{ icon|default:"question-circle" }}"></icon>
+    {% endif %}
+    {% trans name|default:"Button" %}
+  </a>
+{% endspaceless %}

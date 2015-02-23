@@ -2,6 +2,7 @@
 
 from captcha.fields import ReCaptchaField
 
+__all__ = ["form_with_captcha"]
 __author__ = "pmeier82"
 
 

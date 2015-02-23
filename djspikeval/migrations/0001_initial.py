@@ -78,7 +78,7 @@ class Migration(migrations.Migration):
                 ('task_id', models.CharField(max_length=255, null=True, blank=True)),
                 ('task_log', models.TextField(null=True, blank=True)),
                 ('valid_ev_log', models.TextField(null=True, blank=True)),
-                ('batch', models.ForeignKey(to='djspikeval.Batch')),
+                ('batch', models.ForeignKey(to='djspikeval.models.submission.Submission')),
             ],
             options={
             },

@@ -1,8 +1,7 @@
 ##---IMPORTS
 
-from .gnode_spike.apps.module.metric_ffranke.models import ResultMetricFFranke
-
 from spikeval.module import ModMetricFranke, ModuleExecutionError
+from .models import ResultMetricFFranke
 
 
 ##---HELPERS

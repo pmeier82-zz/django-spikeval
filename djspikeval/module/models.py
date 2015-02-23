@@ -92,7 +92,7 @@ class Result(TimeStampedModel):
     @property
     def batch(self):
         try:
-            return self.evaluation.batch
+            return self.evaluation.submission
         except:
             return None
 

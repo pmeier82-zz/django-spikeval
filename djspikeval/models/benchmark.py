@@ -9,6 +9,7 @@ from model_utils.models import StatusModel, TimeStampedModel
 
 from djspikeval.models.util import AccessChoices
 
+
 __all__ = ["Benchmark"]
 __author__ = "pmeier82"
 
@@ -24,6 +25,7 @@ class Benchmark(StatusModel, TimeStampedModel):
     # meta
     class Meta:
         app_label = "djspikeval"
+        get_latest_by = "modified"
 
     # choices
     STATUS = AccessChoices
@@ -52,23 +54,19 @@ class Benchmark(StatusModel, TimeStampedModel):
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         default=2,
-        help_text="The user who contributed this Benchmark.")
+        help_text="The user who contributed this Benchmark.",
+        related_name="benchmarks")
 
     # managers
     tags = TaggableManager(
         _("Benchmark Tags"),
         help_text="A comma-separated list of tags classifying the Benchmark.",
         blank=True)
-    fileasset_set = GenericRelation("base.FileAsset")
 
-    # special methods
-    def __str__(self):
-        return str(self.name)
-
+    # methods
     def __unicode__(self):
         return unicode(self.name)
 
-    # permanent urls
     @models.permalink
     def get_absolute_url(self):
         return "benchmark:detail", (self.pk,), {}
@@ -77,7 +75,6 @@ class Benchmark(StatusModel, TimeStampedModel):
     def get_delete_url(self):
         return "benchmark:delete", (self.pk,), {}
 
-    # interface
     def is_public(self):
         return self.status == Benchmark.STATUS.public
 
@@ -99,7 +96,7 @@ class Benchmark(StatusModel, TimeStampedModel):
             ~models.Q(valid_rd_log__contains="ERROR"),
             ~models.Q(valid_gt_log__contains="ERROR"))
 
-    def batch_count(self, user=None):
+    def submission_count(self, user=None):
         return self.batch_set.filter(status__exact="public").count()
 
 

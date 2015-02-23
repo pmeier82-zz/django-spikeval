@@ -3,8 +3,7 @@
 
 <form {% if form_id %}id="{{ form_id }}"{% endif %} method="post">
   {% csrf_token %}
-  <p>Are you sure you want to delete "{{ object }}" ?</p>
-  <button class="btn btn-danger" type="submit" value="Submit">Delete</button>
-  <a class="btn btn-default" href="{{ request.path|slice:":-7" }}">Cancel</a>
+  <p>{% trans "Are you sure you want to delete" %} &quot;{{ object }}&quot;?</p>
+  <button class="btn btn-danger" type="submit" value="Submit">{% trans "Delete" %}</button>
+  <a class="btn btn-default" href="{{ request.META.HTTP_REFERER }}">{% trans "Cancel" %}</a>
 </form>
-

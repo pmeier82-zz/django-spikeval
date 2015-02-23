@@ -2,8 +2,7 @@
 
 from algorithm import *
 from benchmark import *
-from evaluation import *
+from submission import *
 from trial import *
-from user import *
 
 __author__ = "pmeier82"

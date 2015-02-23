@@ -15,20 +15,19 @@ class Algorithm(TimeStampedModel):
     """algorithm model"""
 
     # meta
-
     class Meta:
         app_label = "djspikeval"
+        get_latest_by = "modified"
         unique_together = ("name", "version")
 
     # fields
-
     name = models.CharField(
         max_length=255,
         blank=False)
     version = models.CharField(
         max_length=32,
         default="0.1")
-    description = description = models.TextField(
+    description = models.TextField(
         blank=True)
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -41,19 +40,11 @@ class Algorithm(TimeStampedModel):
         null=True)
 
     # managers
-
     kind = TaggableManager("Kind", blank=True)
-    files = GenericRelation("base.FileAsset")
 
-    # special methods
-
-    def __str__(self):
-        return str(self.__unicode__())
-
+    # methods
     def __unicode__(self):
-        return unicode("%s (%s)" % (self.name, self.version))
-
-    # django special methods
+        return unicode("{} ({})".format(self.name, self.version))
 
     @models.permalink
     def get_absolute_url(self):
@@ -62,8 +53,6 @@ class Algorithm(TimeStampedModel):
     @models.permalink
     def get_delete_url(self):
         return "algorithm:delete", (self.pk,), {}
-
-    # interface
 
     def has_access(self, user):
         return self.owner == user or getattr(user, "is_superuser", False) is True

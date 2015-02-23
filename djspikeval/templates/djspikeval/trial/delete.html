@@ -1,4 +1,4 @@
-{% extends "djspikeval/benchmark/base.html" %}
+{% extends "djspikeval/trial/base.html" %}
 
 {% load i18n %}
 
@@ -7,7 +7,7 @@
 
 {% block content %}
   {% if user.is_authenticated %}
-    {% include "djspikeval/_delete.html" with form_id="delete-benchmark" %}
+    {% include "djspikeval/_delete.html" with form_id="delete-trial" %}
   {% else %}
     <p>NOT REGISTERED!</p>
   {% endif %}

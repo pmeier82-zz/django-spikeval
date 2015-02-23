@@ -3,6 +3,7 @@
 from django import forms
 from django.apps import apps
 
+__all__ = ["AlgorithmForm"]
 __author__ = "pmeier82"
 
 Algorithm = apps.get_registered_model("djspikeval", "algorithm")

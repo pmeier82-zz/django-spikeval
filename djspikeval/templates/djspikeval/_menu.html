@@ -1,0 +1,12 @@
+{% load i18n %}
+{% load base %}
+
+<li class="{% active request "^/algorithm/" %}"><a href="{% url "algorithm:list" %}">
+  {% trans "Algorithms" %}
+</a></li>
+<li class="{% active request "^/benchmark/" %}"><a href="{% url "benchmark:list" %}">
+  {% trans "Benchmarks" %}
+</a></li>
+<li class="{% active request "^/evaluation/" %}"><a href="{% url "evaluation:list" %}">
+  {% trans "Evaluations" %}
+</a></li>

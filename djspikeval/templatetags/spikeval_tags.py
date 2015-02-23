@@ -3,9 +3,11 @@
 from django import template
 from django.apps import apps
 from django.conf import settings
-from django.template.defaultfilters import date, slugify
+from django.shortcuts import resolve_url
+from django.template.defaultfilters import slugify
 
-from util import get_pc
+from ..util import get_pc
+
 
 User = apps.get_registered_model(*settings.AUTH_USER_MODEL.split("."))
 Benchmark = apps.get_registered_model("djspikeval", "benchmark")
@@ -39,7 +41,7 @@ def is_editable(obj, user):
     if user.is_superuser:
         return True
     if hasattr(obj, "is_editable"):
-        return obj.has_access(user)
+        return obj.is_editable(user)
     if hasattr(obj, "owner"):
         return obj.owner == user
     else:
@@ -86,6 +88,7 @@ def populate(form, instance):
         pass
     finally:
         return form
+
 
 ## TAGS
 
@@ -160,6 +163,20 @@ def appendix(context, obj):
     return {"obj": obj,
             "appendix": obj.datafile_set.filter(kind="appendix"),
             "user": context['user']}
+
+
+@register.inclusion_tag("djspikeval/_action.html")
+def action(name, **kwargs):
+    """render action button"""
+
+    icon = kwargs.pop("icon", None)
+    href = kwargs.pop("href", None)
+    if href is not None:
+        href = resolve_url(href, **kwargs)
+
+    return {"name": name,
+            "icon": icon,
+            "href": href}
 
 
 if __name__ == "__main__":

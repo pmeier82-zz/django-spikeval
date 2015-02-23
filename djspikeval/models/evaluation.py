@@ -2,11 +2,10 @@
 
 from django.db import models
 from django.contrib.contenttypes.fields import GenericRelation
-from django.utils.translation import ugettext_lazy as _
 from model_utils import Choices
 from model_utils.models import StatusModel, TimeStampedModel
+from .signals import spike_evaluation_run, spike_validate_st
 
-from djspikeval.signals import spike_evaluation_run, spike_validate_st
 
 __all__ = ["Evaluation"]
 __author__ = "pmeier82"
@@ -21,15 +20,15 @@ class Evaluation(StatusModel, TimeStampedModel):
     file and the evaluation results.
     """
 
-    STATUS = Choices("initial", "running", "success", "failure")
-
-    ## meta
-
+    # meta
     class Meta:
         app_label = "djspikeval"
+        get_latest_by = "modified"
 
-    ## fields
+    # choices
+    STATUS = Choices("initial", "running", "success", "failure")
 
+    # fields
     task_id = models.CharField(
         max_length=255,
         blank=True,
@@ -40,22 +39,15 @@ class Evaluation(StatusModel, TimeStampedModel):
     valid_ev_log = models.TextField(
         blank=True,
         null=True)
-    batch = models.ForeignKey("djspikeval.Batch")
+    submission = models.ForeignKey("djspikeval.Submission")
     trial = models.ForeignKey("djspikeval.Trial")
 
-    ## managers
-
+    # managers
     datafile_set = GenericRelation("djspikeval.Datafile")
 
-    ## special methods
-
-    def __str__(self):
-        return "#%s $%s @%s" % (self.batch_id, self.pk, self.trial_id)
-
+    # methods
     def __unicode__(self):
-        return unicode(self.__str__())
-
-    ## interface
+        return unicode("#{} ${} @{}".format(self.submission_id, self.pk, self.trial_id))
 
     @property
     def modules(self):
@@ -83,7 +75,7 @@ class Evaluation(StatusModel, TimeStampedModel):
         return self.status == self.STATUS.success
 
     def is_accessible(self, user):
-        return self.batch.is_accessible(user)
+        return self.submission.is_accessible(user)
 
     def clear_results(self):
         try:

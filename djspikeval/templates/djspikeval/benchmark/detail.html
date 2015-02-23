@@ -13,231 +13,26 @@
 
 
 {% block content %}
-  {% if object|is_editable:user %}
-    <section class="well well-sm">
+  {% if user.is_authenticated %}
+    <section>
       <div class="btn-group btn-group-sm input-group input-group-sm">
         <span class="input-group-addon">Actions:</span>
-        <a class="btn btn-default" href="{% url "benchmark:update" object.id %}">
-          <icon class="fa fa-edit"></icon>
-          {% trans "Update" %}
-        </a>
-        <a class="btn btn-default" href="{% url "benchmark:delete" object.id %}">
-          <icon class=" fa fa-bomb"></icon>
-          {% trans "Delete" %}
-        </a>
-        <a class="btn btn-default" href="{% url "benchmark:trial" object.id %}">
-          <icon class="fa fa-file"></icon>
-          {% trans "Create Trial" %}
-        </a>
-        <a class="btn btn-default" href="#">
-          <icon class="fa fa-file"></icon>
-          {% trans "Create Appendix" %}
-        </a>
+        {% action "Submit" icon="tasks" href="evaluation:submit" pk=object.id %}
+        {% if object|is_editable:user %}
+          {% action "Update" icon="edit" href="benchmark:update" pk=object.id %}
+          {% action "Delete" icon="remove" href="benchmark:delete" pk=object.id %}
+          {% action "Create Trial" icon="file" href="benchmark:trial" pk=object.id %}
+        {% endif %}
       </div>
     </section>
   {% endif %}
   <section>
-    <div class="panel panel-default">
-      <div class="panel-body">
-        <dl class="dl-horizontal">
-          <dt>
-            <strong>Description:</strong>
-          </dt>
-          <dd>
-            {{ object.description|default:"no description" }}
-          </dd>
-        </dl>
-        <dl class="dl-horizontal">
-          <dt>
-            <strong>Owner:</strong>
-          </dt>
-          <dd>
-            {% fa_text object.owner.username "user" link=object.owner.get_absolute_url %}
-            {% ifequal object.owner user %}(you){% endifequal %}
-          </dd>
-          <dt>
-            <strong>Created:</strong>
-          </dt>
-          <dd>
-            {% fa_text object.created|date "clock-o" %}
-          </dd>
-          <dt>
-            <strong>Modified:</strong>
-          </dt>
-          <dd>
-            {% fa_text object.modified|date "clock-o" %}
-          </dd>
-          <dt>
-            <strong>Status:</strong>
-          </dt>
-          <dd>
-            {% if object.is_public %}
-              {% fa_text object.status "eye" color="green" strong=True %}
-              - available for user download
-            {% else %}
-              {% fa_text object.status "eye-slash" color="red" strong=True %}
-              - for your eyes only
-            {% endif %}
-            &nbsp;
-            <a class="btn btn-default btn-xs" href="{% url "benchmark:toggle" object.id %}">{% trans "toggle" %}</a>
-          </dd>
-          <dt>
-            <strong>Tags:</strong>
-          </dt>
-          <dd>
-            {% for tag in object.tags.all %}
-              {% fa_text tag "tag" %}{% if not forloop.last %}, {% endif %}
-            {% empty %}
-              &lt;untagged&gt;
-            {% endfor %}
-          </dd>
-          <dt>
-            <strong>Summary:</strong>
-          </dt>
-          <dd>
-            <a class="btn btn-info btn-xs" href="{% url "benchmark:summary" object.id %}">
-              CLICK HERE TO VIEW COMPARISON OF DIFFERENT EVALUATIONS
-            </a>
-            <br>
-          </dd>
-        </dl>
-      </div>
-    </div>
+    {% include "djspikeval/benchmark/_info.html" with obj=object %}
   </section>
-
   <section>
-    <h2>Trial Set
-      <small>tuples of rawdata and groundtruth</small>
-    </h2>
-    <p>Benchmarks consist of one or more Trials. You may download Trials and apply your spike sorting
-      algorithm. After the spike sorting on your end, you upload the resulting spike train set here and
-      start an Evaluation.</p>
-
-    {% if object.trial_set.all %}
-      <table class="table table-striped table-condensed">
-        <thead>
-        <tr>
-          <th>{% trans "Name" %}</th>
-          <th>{% trans "Created" %}</th>
-          <th>{{ object.parameter }}</th>
-          <th>{% trans "Description" %}</th>
-          <th>{% trans "Download" %}</th>
-          {% ifequal object.owner user %}
-            <th>{% trans "Status" %}</th>
-          {% endifequal %}
-        </tr>
-        </thead>
-        <tbody>
-        {% for tr in object.trial_set.all %}
-          <tr>
-            <td>
-              {% if object|is_editable:user %}
-                <a href="{{ tr.get_absolute_url }}">
-              {% endif %}
-              <nobr><strong>{{ tr }}</strong></nobr>
-              {% if object|is_editable:user %}
-                </a>
-              {% endif %}
-            </td>
-            <td>
-              <nobr>
-                <i class="icon-time"></i>
-                {{ tr.modified|date }}
-              </nobr>
-            </td>
-            <td>
-              {{ tr.parameter }}
-            </td>
-            <td>
-              {{ tr.description|truncatewords:15|escape }}
-            </td>
-            {% with tr.rd_file as f %}
-              <td>
-                <nobr>
-                  <a href="{{ f.get_absolute_url }}">
-                    {{ f.name }} - {{ f.size|filesizeformat }}
-                  </a>
-                </nobr>
-                {{ tr.gt_public }}
-                {% if tr.gt_public or object|is_editable:user %}
-                  {% with tr.gt_file as f %}
-                    </br>
-                    <nobr>
-                      <a href="{{ f.get_absolute_url }}">
-                        {{ f.name }} - {{ f.size|filesizeformat }}
-                      </a>
-                    </nobr>
-                  {% endwith %}
-                {% endif %}
-              </td>
-            {% endwith %}
-            {% if object|is_editable:user %}
-              <td>
-                {% if tr.is_valid %}
-                  <i class="icon-ok"></i>
-                  <strong style="color: green">VALID</strong>
-                {% else %}
-                  <i class="icon-exclamation-sign"></i>
-                  <strong style="color: red">INVALID</strong>
-                {% endif %}
-              </td>
-            {% endif %}
-          </tr>
-        {% endfor %}
-        <tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td>
-            <a href="{% url "benchmark:download" object.id %}"
-               class="btn btn-default btn-xs">{% trans "download" %}</a>
-          </td>
-          {% ifequal object.owner user %}
-            <td></td>
-          {% endifequal %}
-        </tr>
-        </tbody>
-      </table>
-    {% else %}
-      <p>This benchmark has no trials yet.
-        {% ifequal object.owner request.user %}
-          You can add new trials by clicking on the "Create Trial" button above.
-        {% endifequal %}
-      </p>
-    {% endif %}
+    {% include "djspikeval/benchmark/_trials.html" with obj=object %}
   </section>
-
-  {% with object as obj %}
-    {% include "djspikeval/_appendix.html" %}
-  {% endwith %}
-
   <section>
-    {% if not user.is_authenticated %}
-      <p class="well well-small">Please log in to submit your own Evaluations!</p>
-    {% else %}
-      {% if object.trial_set_valid %}
-        {#        <form role="form" class="form-horizontal" method="post"#}
-        {#              enctype="multipart/form-data" style="display:none">#}
-        {#          {% csrf_token %}#}
-        {#          {% bootstrap_form bt_form layout="horizontal" %}#}
-        {#          {% buttons submit='Submit Evaluations' reset='Cancel' layout='horizontal' %}{% endbuttons %}#}
-        {#        </form>#}
-        {#        <form method="POST" enctype="multipart/form-data"#}
-        {#              class="form form-horizontal well well-small">#}
-        {#          <fieldset>#}
-        {#            <legend>Submit Evaluation</legend>#}
-        {#            {% csrf_token %}#}
-        {#            {{ bt_form|as_bootstrap }}#}
-        {#            <div class="form-actions" style="clear: both;">#}
-        {#              <input type="submit" class="btn btn-primary" name="ev_submit"#}
-        {#                     value="{% trans 'Submit Evaluations' %}"/>#}
-        {#            </div>#}
-        {#          </fieldset>#}
-        {#        </form>#}
-      {% else %}
-        There are no Trials for this Benchmark yet!
-      {% endif %}
-    {% endif %}
+    {% include "djspikeval/_appendix.html" with obj=object %}
   </section>
 {% endblock %}
