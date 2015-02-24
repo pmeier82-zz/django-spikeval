@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
@@ -26,6 +27,7 @@ class Benchmark(StatusModel, TimeStampedModel):
     class Meta:
         app_label = "djspikeval"
         get_latest_by = "modified"
+        ordering = ("-modified", "name")
 
     # choices
     STATUS = AccessChoices
@@ -58,10 +60,11 @@ class Benchmark(StatusModel, TimeStampedModel):
         related_name="benchmarks")
 
     # managers
-    tags = TaggableManager(
-        _("Benchmark Tags"),
+    kind = TaggableManager(
+        _("Benchmark Kind"),
         help_text="A comma-separated list of tags classifying the Benchmark.",
         blank=True)
+    attachment_set = GenericRelation("djspikeval.Attachment")
 
     # methods
     def __unicode__(self):
@@ -97,7 +100,15 @@ class Benchmark(StatusModel, TimeStampedModel):
             ~models.Q(valid_gt_log__contains="ERROR"))
 
     def submission_count(self, user=None):
-        return self.batch_set.filter(status__exact="public").count()
+        try:
+            if user.is_superuser():
+                return self.submission_set.count()
+            return self.submission_set.filter(
+                models.Q(status__exact="public") |
+                models.Q(owner_id=user.pk)
+            ).count()
+        except:
+            return self.submission_set.filter(status__exact="public").count()
 
 
 if __name__ == "__main__":

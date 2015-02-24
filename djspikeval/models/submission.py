@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
@@ -28,14 +29,15 @@ class Submission(StatusModel, TimeStampedModel):
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         blank=True,
-        help_text="The user associated with this Batch.")
+        help_text="The user associated with this submission.")
     algorithm = models.ForeignKey(
         "djspikeval.Algorithm",
         default=1,
-        help_text="The Algorithm associated with this Batch.")
+        help_text="The Algorithm associated with this submission.")
     benchmark = models.ForeignKey(
         "djspikeval.Benchmark",
-        help_text="The Benchmark associated with this Batch.")
+        help_text="The Benchmark associated with this submission.",
+        related_name="submission_set")
 
     # managers
     attachment_set = GenericRelation("djspikeval.Attachment")

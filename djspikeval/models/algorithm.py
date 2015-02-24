@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
@@ -18,6 +19,7 @@ class Algorithm(TimeStampedModel):
     class Meta:
         app_label = "djspikeval"
         get_latest_by = "modified"
+        ordering = ("-modified", "name", "version")
         unique_together = ("name", "version")
 
     # fields
@@ -40,7 +42,11 @@ class Algorithm(TimeStampedModel):
         null=True)
 
     # managers
-    kind = TaggableManager("Kind", blank=True)
+    kind = TaggableManager(
+        _("Algorithm Kind"),
+        help_text="A comma-separated list of tags classifying the Algorithm.",
+        blank=True)
+    attachment_set = GenericRelation("djspikeval.Attachment")
 
     # methods
     def __unicode__(self):

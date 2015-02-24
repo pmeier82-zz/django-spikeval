@@ -2,27 +2,25 @@
 {% load bootstrap3 %}
 {% load fa_tags %}
 {% load spikeval_tags %}
-{% load pagination_tags %}
 {% load sorting_tags %}
-
 
 <form class="form-inline" method="GET">
   <div class="input-group input-group-sm">
     <span class="input-group-addon"><i class="fa fa-search"></i></span>
-    <input id="search" type="text" name="search" class="form-control"
-           value="{{ search_terms|default_if_none:"" }}"/>
+    <input id="scope" type="text" name="scope" class="form-control"
+           value="{{ scope|default_if_none:"" }}"/>
     <span class="input-group-btn">
-          <button type="submit" class="btn btn-default" value="Search">Search</button>
-      {% if search_terms %}
-        <a class="btn btn-default" onclick="$('#search').val('')">Clear</a>
+      <button type="submit" class="btn btn-default" value="Search">
+        {% trans "Search" %}
+      </button>
+      {% if scope %}
+        <a class="btn btn-default" onclick="$('#scope').val('')">Clear</a>
       {% endif %}
     </span>
   </div>
 </form>
 
-{% auto_sort object_list %}
-{% autopaginate object_list 2 %}
-<table class="table table-hover table-condensed">
+<table class="table table-condensed table-hover">
   <thead>
   <tr>
     {% sort_th "Name" "name" %}
@@ -50,7 +48,7 @@
         {% fa_text obj.modified|date "clock-o" %}
       </td>
       <td>
-        <a href="{% url "evaluation:list" obj.id %}">{{ obj.batch_count }}</a>
+        <a href="{% url "evaluation:list-filter" obj.id %}">{{ obj.submission_count }}</a>
       </td>
       <td>
         {{ obj.description|truncatewords:11|escape }}
@@ -59,8 +57,8 @@
         <div class="btn-group btn-group-xs pull-left">
           <a href="{% url "benchmark:download" obj.id %}"
              class="btn btn-default btn-xs">{% trans "download" %}</a>
-{#          <a href="{% url "benchmark:summary" obj.id %}"#}
-{#             class="btn btn-default btn-xs">{% trans "summary" %}</a>#}
+          {#          <a href="{% url "benchmark:summary" obj.id %}"#}
+          {#             class="btn btn-default btn-xs">{% trans "summary" %}</a>#}
           {% if obj|is_editable:user %}
             <a href="{% url "benchmark:toggle" obj.id %}"
                class="btn btn-default btn-xs">{% trans "toggle" %}</a>
@@ -77,4 +75,4 @@
   {% endfor %}
   </tbody>
 </table>
-{% paginate %}
+{% include "djspikeval/_pagination.html" %}

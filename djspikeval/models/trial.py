@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from model_utils.models import TimeStampedModel
 from model_utils import Choices
 from .signals import spike_validate_st, spike_validate_rd
-
 
 __all__ = ["Trial"]
 __author__ = "pmeier82"
@@ -77,7 +77,7 @@ class Trial(TimeStampedModel):
         help_text="The Benchmark associated with this Trial.")
 
     # managers
-    data_set = GenericRelation("djspikeval.Datafile")
+    datafile_set = GenericRelation("djspikeval.Datafile")
     attachment_set = GenericRelation("djspikeval.Attachment")
 
     # methods
@@ -99,7 +99,7 @@ class Trial(TimeStampedModel):
     @property
     def rd_file(self):
         try:
-            return self.data_set.filter(kind="rd_file")[0]
+            return self.datafile_set.filter(kind="rd_file")[0]
         except IndexError:
             return None
 
@@ -116,7 +116,7 @@ class Trial(TimeStampedModel):
     @property
     def gt_file(self):
         try:
-            return self.data_set.filter(kind="st_file")[0]
+            return self.datafile_set.filter(kind="st_file")[0]
         except IndexError:
             return None
 

@@ -17,11 +17,11 @@
     <section>
       <div class="btn-group btn-group-sm input-group input-group-sm">
         <span class="input-group-addon">Actions:</span>
-        {% action "Submit" icon="tasks" href="evaluation:submit" pk=object.id %}
+        {% action "Submit" icon="tasks" href="evaluation:create" pk=object.id %}
         {% if object|is_editable:user %}
           {% action "Update" icon="edit" href="benchmark:update" pk=object.id %}
           {% action "Delete" icon="remove" href="benchmark:delete" pk=object.id %}
-          {% action "Create Trial" icon="file" href="benchmark:trial" pk=object.id %}
+          {% action "Create Trial" icon="file" href="trial:create" pk=object.id %}
         {% endif %}
       </div>
     </section>
@@ -33,6 +33,6 @@
     {% include "djspikeval/benchmark/_trials.html" with obj=object %}
   </section>
   <section>
-    {% include "djspikeval/_appendix.html" with obj=object %}
+    {% include "djspikeval/_attachments.html" with obj=object %}
   </section>
 {% endblock %}

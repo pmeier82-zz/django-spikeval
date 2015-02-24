@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
 from django import template
 from django.apps import apps
 from django.conf import settings
@@ -156,7 +157,7 @@ def delete(obj, btn_name="delete", delete_url=None):
         "disabled": disabled}
 
 
-@register.inclusion_tag("djspikeval/_appendix.html", takes_context=True)
+@register.inclusion_tag("djspikeval/_attachments.html", takes_context=True)
 def appendix(context, obj):
     """appendix for object"""
 

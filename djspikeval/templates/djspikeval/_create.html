@@ -12,6 +12,6 @@
   {% buttons layout="horizontal" %}
     <button type="submit" class="btn btn-primary">{% trans "Submit" %}</button>
     <button type="reset" class="btn btn-default">{% trans "Reset" %}</button>
-    <a class="btn btn-default" href="{{ request.path|slice:":-7" }}">{% trans "Cancel" %}</a>
+    <a class="btn btn-default" href="{{ request.META.HTTP_REFERER }}">{% trans "Cancel" %}</a>
   {% endbuttons %}
 </form>

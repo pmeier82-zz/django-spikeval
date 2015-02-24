@@ -5,5 +5,5 @@ django-model-utils>=2.0
 django-taggit>=0.12
 django-taggit-templatetags2
 django-bootstrap3
-django-pagination-bootstrap
-django-sorting-bootstrap
+
+-e git+https://github.com:pmeier82/spikeval#egg=spikeval

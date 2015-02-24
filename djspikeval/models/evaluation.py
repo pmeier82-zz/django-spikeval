@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
 from django.db import models
 from django.contrib.contenttypes.fields import GenericRelation
 from model_utils import Choices
@@ -44,6 +45,7 @@ class Evaluation(StatusModel, TimeStampedModel):
 
     # managers
     datafile_set = GenericRelation("djspikeval.Datafile")
+    attachment_set = GenericRelation("djspikeval.Attachment")
 
     # methods
     def __unicode__(self):

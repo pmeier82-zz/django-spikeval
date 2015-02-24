@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
 from captcha.fields import ReCaptchaField
 
 __all__ = ["form_with_captcha"]

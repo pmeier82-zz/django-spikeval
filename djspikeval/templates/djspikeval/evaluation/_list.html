@@ -3,6 +3,21 @@
 {% load sorting_tags %}
 {% load spikeval_tags %}
 
+<form class="form-inline" method="GET">
+  <div class="input-group input-group-sm">
+    <span class="input-group-addon"><i class="fa fa-search"></i></span>
+    <input id="search" type="text" name="search" class="form-control"
+           value="{{ search|default_if_none:"" }}"/>
+    <span class="input-group-btn">
+      <button type="submit" class="btn btn-default" value="Search">
+        {% trans "Search" %}
+      </button>
+      {% if search_terms %}
+        <a class="btn btn-default" onclick="$('#search').val('')">Clear</a>
+      {% endif %}
+    </span>
+  </div>
+</form>
 
 {% autosort blist %}
 {% autopaginate blist 20 %}

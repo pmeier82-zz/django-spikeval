@@ -3,6 +3,7 @@
 {% load i18n %}
 {% load bootstrap3 %}
 {% load spikeval_tags %}
+{% load taggit_templatetags2_tags %}
 
 {% block title %}{{ block.super }} {% trans "List" %}{% endblock %}
 
@@ -12,13 +13,21 @@
       <div class="btn-group btn-group-sm input-group input-group-sm">
         <span class="input-group-addon">Actions:</span>
         {% action "Create Benchmark" icon="file" href="benchmark:create" %}
+        <a class="btn btn-default" onclick="$('#tagcloud').toggle();">
+          <icon class="fa fa-tags"></icon>
+          {% trans "Tagcloud" %}
+        </a>
       </div>
     </section>
   {% endif %}
+  <section id="tagcloud" style="display:none;">
+    <div class="panel panel-default center-block">
+      <div class="panel-body">
+        {% include_tagcloud "djspikeval.benchmark:kind" %}
+      </div>
+    </div>
+  </section>
   <section>
-    <h3>Benchmark List
-      <small>public Benchmarks are listed here</small>
-    </h3>
     {% include "djspikeval/benchmark/_list.html" %}
   </section>
 {% endblock %}

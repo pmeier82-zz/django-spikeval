@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
 import simplejson
 import zipfile
 from StringIO import StringIO

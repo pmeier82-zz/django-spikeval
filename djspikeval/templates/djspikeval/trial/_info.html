@@ -35,9 +35,9 @@
       </dt>
       <dd>
         {% if obj.is_valid %}
-          <strong style="color: green">VALID</strong>
+          {% fa_text "VALID" "check-circle" color="green" strong=True %}
         {% else %}
-          <strong style="color: red">INVALID</strong>
+          {% fa_text "INVALID" "exclamation-circle" color="red" strong=True %}
         {% endif %}
       </dd>
     </dl>

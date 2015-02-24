@@ -12,10 +12,7 @@
     <section class="well well-sm">
       <div class="btn-group btn-group-sm input-group input-group-sm">
         <span class="input-group-addon">Actions:</span>
-        <a class="btn btn-default" href="{% url "algorithm:create" %}">
-          <icon class="fa fa-plus-square-o"></icon>
-          {% trans "Create" %}
-        </a>
+        {% action "Create Algorithm" icon="file" href="algorithm:create" %}
         <a class="btn btn-default" onclick="$('#tagcloud').toggle();">
           <icon class="fa fa-tags"></icon>
           {% trans "Tagcloud" %}

@@ -1,11 +1,6 @@
 # -*- coding: utf-8 -*-
-#
-# django-spikeval - setup.py
-#
-# Philipp Meier <pmeier82 at googlemail dot com>
-# 2015-02-23
-#
 
+from __future__ import unicode_literals
 from setuptools import setup
 
 VERSION = __import__("djspikeval").__version__
@@ -23,7 +18,7 @@ if __name__ == "__main__":
         author="Philipp Meier",
         author_email="pmeier82@gmail.com",
 
-        install_requires=["django>=1.7", "django-taggit>=0.12", "SpikEval"],
+        install_requires=["django>=1.7", "django-taggit>=0.12", "spikeval"],
         packages=["djspikeval"],
         classifiers=[
             "Development Status :: 4 - Beta",

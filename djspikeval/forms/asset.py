@@ -1,8 +1,8 @@
-##---IMPORTS
+# -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
 from django import forms
 from django.apps import apps
-
 from util import form_with_captcha
 
 __all__ = ["AttachmentForm"]

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
 import simplejson
 import zipfile
 from StringIO import StringIO
@@ -37,15 +38,25 @@ class BenchmarkBaseView(object):
 
 class BenchmarkList(BenchmarkBaseView, ListView):
     template_name = "djspikeval/benchmark/list.html"
+    paginate_by = 10
+
+    def get_context_data(self, **kwargs):
+        cntx = super(BenchmarkList, self).get_context_data(**kwargs)
+        cntx.update(scope=self.request.GET.get("scope"))
+        return cntx
 
     def get_queryset(self):
-        if self.request.user.is_superuser:
-            return Benchmark.objects.all()
-        else:
-            return Benchmark.objects.filter(
+        rval = Benchmark.objects.all()
+        if not self.request.user.is_superuser:
+            rval = Benchmark.objects.filter(
                 Q(status=Benchmark.STATUS.public) |
                 Q(owner__pk=self.request.user.pk)
             )
+        if self.request.GET.get("scope"):
+            rval = (
+                rval.filter(name__icontains=self.request.GET.get("scope")) |
+                rval.filter(kind__name__icontains=self.request.GET.get("scope")))
+        return rval.distinct()
 
 
 class BenchmarkCreate(BenchmarkBaseView, CreateView):
