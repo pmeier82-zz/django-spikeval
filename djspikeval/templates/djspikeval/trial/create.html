@@ -6,7 +6,7 @@
 
 {% block content %}
   {% if user.is_authenticated %}
-    {% include "djspikeval/_create.html" with form_id="create-trial" %}
+    {% include "base/_create.html" with form_id="create-trial" %}
   {% else %}
     <p>NOT REGISTERED!</p>
   {% endif %}

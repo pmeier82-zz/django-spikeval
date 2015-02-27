@@ -40,7 +40,11 @@ class Submission(StatusModel, TimeStampedModel):
         related_name="submission_set")
 
     # managers
-    attachment_set = GenericRelation("djspikeval.Attachment")
+    asset_set = GenericRelation("base.asset")
+
+    @property
+    def attachment_set(self):
+        return
 
     # methods
     def __unicode__(self):

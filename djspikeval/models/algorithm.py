@@ -46,7 +46,11 @@ class Algorithm(TimeStampedModel):
         _("Algorithm Kind"),
         help_text="A comma-separated list of tags classifying the Algorithm.",
         blank=True)
-    attachment_set = GenericRelation("djspikeval.Attachment")
+    asset_set = GenericRelation("base.Asset")
+
+    @property
+    def attachment_set(self):
+        return self.asset_set.filter(kind="attachment")
 
     # methods
     def __unicode__(self):

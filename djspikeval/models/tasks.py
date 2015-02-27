@@ -12,15 +12,14 @@ from spikeval.log import Logger
 
 from .signals import spike_validate_st, spike_validate_rd
 
-
 __all__ = ["spike_validate_rd", "spike_validate_st"]
 __author__ = "pmeier82"
 
-USE_CELERY = getattr(settings, 'USE_CELERY', False)
-if getattr(settings, 'CELERY_USE_PRIORITY', None) is not None:
-    USE_CELERY = getattr(settings, 'CELERY_USE_PRIORITY')
+USE_CELERY = getattr(settings, "USE_CELERY", False)
+if getattr(settings, "CELERY_USE_PRIORITY", None) is not None:
+    USE_CELERY = getattr(settings, "CELERY_USE_PRIORITY")
 
-Data = apps.get_registered_model("djspikeval", "datafile")
+Asset = apps.get_registered_model("base", "asset")
 
 
 def validate_rawdata_file(sender, **kwargs):
@@ -42,7 +41,7 @@ def validate_spiketrain_file(sender, **kwargs):
 
 spike_validate_st.connect(validate_spiketrain_file, dispatch_uid=__file__)
 
-##---TASKS
+# TASKS
 
 # +Interface 1: The user uploads a file pair. The frontend calls a
 # backend function with the following inputs:
@@ -62,12 +61,13 @@ spike_validate_st.connect(validate_spiketrain_file, dispatch_uid=__file__)
 # gtfilepath = trial.groundtruth.path
 # rawfilepath = trial.raw_data.path
 #
-#[then check the files ... (gtfilepath, rawfilepath)]
+# [then check the files ... (gtfilepath, rawfilepath)]
 #
-#trial.verfied = boolean
-#recrod.verified_error = "string"
+# trial.verfied = boolean
+# recrod.verified_error = "string"
 #
-#return
+# return
+
 
 @task
 def task_validate_rawdata_file(pk):
@@ -84,7 +84,7 @@ def task_validate_rawdata_file(pk):
     valid = False
     logger = Logger.get_logger(StringIO())
     try:
-        df = Data.objects.get(id=pk)
+        df = Asset.objects.get(id=pk)
         assert df.kind == 'rd_file'
         tr = df.content_object
     except:
@@ -127,7 +127,7 @@ def task_validate_spiketrain_file(pk):
     valid = False
     logger = Logger.get_logger(StringIO())
     try:
-        df = Data.objects.get(id=pk)
+        df = Asset.objects.get(id=pk)
         assert df.kind == 'st_file'
         tr = df.content_object
     except:

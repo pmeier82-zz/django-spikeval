@@ -7,6 +7,7 @@ from model_utils.models import TimeStampedModel
 from model_utils import Choices
 from .signals import spike_validate_st, spike_validate_rd
 
+
 __all__ = ["Trial"]
 __author__ = "pmeier82"
 
@@ -77,8 +78,11 @@ class Trial(TimeStampedModel):
         help_text="The Benchmark associated with this Trial.")
 
     # managers
-    datafile_set = GenericRelation("djspikeval.Datafile")
-    attachment_set = GenericRelation("djspikeval.Attachment")
+    asset_set = GenericRelation("base.Asset")
+
+    @property
+    def datafile_set(self):
+        return self.asset_set.filter(kind__in=["rd_file", "st_file"])
 
     # methods
     def __unicode__(self):
@@ -116,7 +120,7 @@ class Trial(TimeStampedModel):
     @property
     def gt_file(self):
         try:
-            return self.datafile_set.filter(kind="st_file")[0]
+            return self.asset_set.filter(kind="st_file")[0]
         except IndexError:
             return None
 

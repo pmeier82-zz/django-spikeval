@@ -20,8 +20,8 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 from numpy import nan, nansum, nanmax
 
-from djspikeval.forms import BenchmarkForm, BenchmarkSearchForm
-# from djspikeval.util import render_to, PLOT_COLORS
+from ..forms import BenchmarkForm, BenchmarkSearchForm
+# from ..util import render_to, PLOT_COLORS
 
 __all__ = [
     "BenchmarkBaseView", "BenchmarkList", "BenchmarkCreate", "BenchmarkDetail",

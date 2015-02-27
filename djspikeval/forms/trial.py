@@ -8,7 +8,7 @@ __all__ = ["TrialForm"]
 __author__ = "pmeier82"
 
 Benchmark = apps.get_registered_model("djspikeval", "benchmark")
-Datafile = apps.get_registered_model("djspikeval", "datafile")
+Datafile = apps.get_registered_model("base", "asset")
 Trial = apps.get_registered_model("djspikeval", "trial")
 
 

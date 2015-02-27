@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load bootstrap3 %}
-{% load fa_tags %}
-{% load spikeval_tags %}
+{% load base %}
+{% load spikeval %}
 {% load sorting_tags %}
 
 <form class="form-inline" method="GET">
@@ -55,4 +55,4 @@
   {% endfor %}
   </tbody>
 </table>
-{% include "djspikeval/_pagination.html" %}
+{% include "base/_pagination.html" %}

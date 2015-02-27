@@ -26,7 +26,7 @@ class AlgorithmBaseView(object):
 
 class AlgorithmList(AlgorithmBaseView, ListView):
     template_name = "djspikeval/algorithm/list.html"
-    paginate_by = 10
+    paginate_by = 2
 
     def get_context_data(self, **kwargs):
         cntx = super(AlgorithmList, self).get_context_data(**kwargs)

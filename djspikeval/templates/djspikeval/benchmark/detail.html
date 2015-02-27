@@ -2,19 +2,17 @@
 
 {% load i18n %}
 {% load bootstrap3 %}
-{% load fa_tags %}
-{% load spikeval_tags %}
-
+{% load base %}
+{% load spikeval %}
 
 {% block heading %}
   {% block title %}{{ block.super }}: &quot;{{ object.name }}&quot;{% endblock %}
   <small>({{ object.status }})</small>
 {% endblock %}
 
-
 {% block content %}
   {% if user.is_authenticated %}
-    <section>
+    <section class="well well-sm">
       <div class="btn-group btn-group-sm input-group input-group-sm">
         <span class="input-group-addon">Actions:</span>
         {% action "Submit" icon="tasks" href="evaluation:create" pk=object.id %}
@@ -22,6 +20,7 @@
           {% action "Update" icon="edit" href="benchmark:update" pk=object.id %}
           {% action "Delete" icon="remove" href="benchmark:delete" pk=object.id %}
           {% action "Create Trial" icon="file" href="trial:create" pk=object.id %}
+          {% action "Create Attachment" icon="file" href="asset:create" kind="attachment" model=object|cls_name pk=object.id %}
         {% endif %}
       </div>
     </section>
@@ -30,9 +29,14 @@
     {% include "djspikeval/benchmark/_info.html" with obj=object %}
   </section>
   <section>
+    <h3>Trials
+      <small>files of this benchmark.</small>
+    </h3>
+    <p>Benchmarks consist of one or more Trials. You may download Trials and apply your spike sorting algorithm. After
+      the spike sorting on your end, you upload the resulting spike train set here and start an Evaluation.</p>
     {% include "djspikeval/benchmark/_trials.html" with obj=object %}
   </section>
   <section>
-    {% include "djspikeval/_attachments.html" with obj=object %}
+    {% include "base/_attachments.html" with obj=object heading="benchmark" %}
   </section>
 {% endblock %}

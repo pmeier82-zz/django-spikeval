@@ -1,0 +1,23 @@
+{% extends "djspikeval/evaluation/base.html" %}
+
+{% load i18n %}
+{% load bootstrap3 %}
+{% load spikeval %}
+
+
+{% block content %}
+  {% if user.is_authenticated %}
+    <section class="well well-sm">
+      <div class="btn-group btn-group-sm input-group input-group-sm">
+        <span class="input-group-addon">Actions:</span>
+        {% action "Submit Evaluation" icon="file" href="evaluation:create" %}
+      </div>
+    </section>
+  {% endif %}
+  <section>
+    <h3>Benchmark List
+      <small>public Evaluations are listed here</small>
+    </h3>
+    {% include "djspikeval/evaluation/_list.html" %}
+  </section>
+{% endblock %}
