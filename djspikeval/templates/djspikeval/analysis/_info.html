@@ -1,0 +1,49 @@
+{% load i18n %}
+{% load base %}
+{% load spikeval %}
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <dl class="dl-horizontal">
+      <dt>
+        <strong>Dataset:</strong>
+      </dt>
+      <dd>
+        <a href="{{ obj.dataset.get_absolute_url }}">{{ obj.dataset }}</a>
+      </dd>
+      <dt>
+        <strong>Algorithm:</strong>
+      </dt>
+      <dd>
+        <a href="{{ obj.algorithm.get_absolute_url }}">{{ obj.algorithm }}</a>
+      </dd>
+      <dt>
+        <strong>User:</strong>
+      </dt>
+      <dd>
+        {% fa_text obj.user.username "user" link=obj.user.get_absolute_url %}
+        {% ifequal obj.user user %}(you){% endifequal %}
+      </dd>
+      <dt>
+        <strong>Created:</strong>
+      </dt>
+      <dd>
+        {% fa_text obj.created|date "clock-o" %}
+      </dd>
+      <dt>
+        <strong>Modified:</strong>
+      </dt>
+      <dd>
+        {% fa_text obj.modified|date "clock-o" %}
+      </dd>
+    </dl>
+    <dl class="dl-horizontal">
+      <dt>
+        <strong>Description:</strong>
+      </dt>
+      <dd>
+        {{ obj.description|default:"no description" }}
+      </dd>
+    </dl>
+  </div>
+</div>

@@ -13,8 +13,7 @@ from djspikeval.forms import AlgorithmForm
 from djspikeval.util import render_to
 
 __all__ = [
-    "AlgorithmBaseView", "AlgorithmList", "AlgorithmCreate", "AlgorithmDetail",
-    "AlgorithmUpdate", "AlgorithmDelete"]
+    "AlgorithmBaseView", "AlgorithmList", "AlgorithmCreate", "AlgorithmDetail", "AlgorithmUpdate", "AlgorithmDelete"]
 __author__ = "pmeier82"
 
 Algorithm = apps.get_registered_model("djspikeval", "algorithm")
@@ -26,7 +25,7 @@ class AlgorithmBaseView(object):
 
 class AlgorithmList(AlgorithmBaseView, ListView):
     template_name = "djspikeval/algorithm/list.html"
-    paginate_by = 2
+    paginate_by = 10
 
     def get_context_data(self, **kwargs):
         cntx = super(AlgorithmList, self).get_context_data(**kwargs)

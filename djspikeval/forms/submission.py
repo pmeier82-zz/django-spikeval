@@ -3,13 +3,16 @@
 from __future__ import unicode_literals
 from django import forms
 from django.apps import apps
+from django.forms import inlineformset_factory
 from util import form_with_captcha
 
 __all__ = ["SubmissionForm"]
 __author__ = "pmeier82"
 
-Trial = apps.get_registered_model("djspikeval", "trial")
-Evaluation = apps.get_registered_model("djspikeval", "evaluation")
+Algorithm = apps.get_registered_model("djspikeval", "algorithm")
+Analysis = apps.get_registered_model("djspikeval", "analysis")
+Asset = apps.get_registered_model("base", "asset")
+Datafile = apps.get_registered_model("djspikeval", "datafile")
 Submission = apps.get_registered_model("djspikeval", "submission")
 
 
@@ -20,36 +23,36 @@ class SubmissionForm(forms.ModelForm):
     # meta
     class Meta:
         model = Submission
-        exclude = ("owner", "status", "status_changed", "benchmark")
+        exclude = ("user", "status", "status_changed", "dataset")
 
     # constructor
     def __init__(self, *args, **kwargs):
-        self.benchmark = kwargs.pop("benchmark")
+        self.dataset = kwargs.pop("dataset", )
         self.user = kwargs.pop("user")
         super(SubmissionForm, self).__init__(*args, **kwargs)
-        self.sub_ids = []
-        for trial in self.benchmark.trial_set_valid():
-            self.sub_ids.append("sub-trial-%s".format(trial.id))
-            self.fields["sub-trial-%s".format(trial.id)] = forms.FileField(
-                label="Upload Trial: %s".format(trial.name),
+        self.sub_form_ids = []
+        for df in self.dataset.datafile_set_valid():
+            self.sub_form_ids.append("sub-datafile-{}".format(df.id))
+            self.fields["sub-datafile-{}".format(df.id)] = forms.FileField(
+                label="Upload: {}".format(df.name),
                 required=False)
 
     def save(self, *args, **kwargs):
-        self.instance.owner = self.user
-        self.instance.benchmark = self.benchmark
+        self.instance.user = self.user
+        self.instance.dataset = self.dataset
         self.instance.status = Submission.STATUS.private
-        submission = super(SubmissionForm, self).save(*args, **kwargs)
+        sub = super(SubmissionForm, self).save(*args, **kwargs)
 
         # evaluations
-        for sub_id in self.sub_ids:
-            if not self.cleaned_data[sub_id]:
+        for sub_form_id in self.sub_form_ids:
+            if not self.cleaned_data[sub_form_id]:
                 continue
 
-            # evaluation
-            pk = int(sub_id.split('-')[-1])
-            trial = Trial.objects.get(id=pk)
-            evalu = Evaluation(batch=submission, trial=trial)
-            evalu.save()
+            # analysis
+            pk = int(sub_form_id.split('-')[-1])
+            datafile = Datafile.objects.get(id=pk)
+            ana = Analysis(submission=sub, datafile=datafile)
+            ana.save()
 
             # TODO: finish!
             # # datafile
@@ -61,9 +64,9 @@ class SubmissionForm(forms.ModelForm):
             # ev_file.save()
             # evalu.validate()
 
-            # trigger evaluation
-            evalu.run()
-        return submission
+            # trigger analysis
+            ana.run()
+        return sub
 
 
 if __name__ == "__main__":

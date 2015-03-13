@@ -10,8 +10,9 @@
 {% block content %}
   {% if user.is_authenticated %}
     <section class="well well-sm">
-      <div class="btn-group btn-group-sm input-group input-group-sm">
-        <span class="input-group-addon">Actions:</span>
+      <span class="label label-default">Actions:</span>
+
+      <div class="btn-group btn-group-xs">
         {% if object|is_editable:user %}
           {% action "Update" icon="edit" href="algorithm:update" pk=object.id %}
           {% action "Delete" icon="remove" href="algorithm:delete" pk=object.id %}
@@ -21,55 +22,7 @@
     </section>
   {% endif %}
   <section>
-    <div class="panel panel-default">
-      <div class="panel-body">
-        <dl class="dl-horizontal">
-          <dt>
-            <strong>Owner:</strong>
-          </dt>
-          <dd>
-            {% fa_text object.owner.username "user" link=object.owner.get_absolute_url %}
-            {% ifequal object.owner request.user %}(you){% endifequal %}
-            </nobr>
-          </dd>
-          <dt>
-            <strong>Created:</strong>
-          </dt>
-          <dd>
-            {% fa_text object.created|date "clock-o" %}
-          </dd>
-          <dt>
-            <strong>Modified:</strong>
-          </dt>
-          <dd>
-            {% fa_text object.modified|date "clock-o" %}
-          </dd>
-          <dt>
-            <strong>Kind:</strong>
-          </dt>
-          <dd>
-            {% for tag in object.kind.all %}
-              {% with tag|stringformat:"s" as tag_str %}
-                {% fa_text "&quot;"|add:tag_str|add:"&quot;" "tag" %}
-                {% if not forloop.last %}
-                  <icon class="fa fa-caret-right"></icon>
-                {% endif %}
-              {% endwith %}
-            {% empty %}
-              &lt;untagged&gt;
-            {% endfor %}
-          </dd>
-        </dl>
-        <dl class="dl-horizontal">
-          <dt>
-            <strong>Description:</strong>
-          </dt>
-          <dd>
-            {{ object.description|default:"no description" }}
-          </dd>
-        </dl>
-      </div>
-    </div>
+    {% include "djspikeval/algorithm/_info.html" with obj=object %}
   </section>
   <section>
     {% include "base/_attachments.html" with obj=object heading="algorithm" %}

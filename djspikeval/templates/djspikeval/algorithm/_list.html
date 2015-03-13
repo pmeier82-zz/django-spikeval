@@ -20,39 +20,41 @@
   </div>
 </form>
 
-<table class="table table-condensed table-hover">
-  <thead>
-  <tr>
-    {% sort_th "Name" "name" %}
-    <th>{% trans "Version" %}</th>
-    {% sort_th "Owner" "owner" %}
-    {% sort_th "Date" "created" %}
-  </tr>
-  </thead>
-  <tbody>
-  {% for obj in object_list %}
+<div class="table-responsive">
+  <table class="table table-condensed table-hover">
+    <thead>
     <tr>
-      <td>
-        <a href="{{ obj.get_absolute_url }}">{{ obj.name }}</a>
-      </td>
-      <td>
-        {{ obj.version }}
-      </td>
-      <td>
-        {% fa_text obj.owner.username "user" link=obj.owner.get_absolute_url %}
-      </td>
-      <td>
-        {% fa_text obj.modified|date "clock-o" %}
-      </td>
+      {% sort_th "Name" "name" %}
+      {% sort_th "User" "user" %}
+      {% sort_th "Date" "created" %}
+      <th>{% trans "Version" %}</th>
     </tr>
-  {% empty %}
-    <tr>
-      <td class="warning">There are no Algorithms available for this filter.</td>
-      <td class="warning"></td>
-      <td class="warning"></td>
-      <td class="warning"></td>
-    </tr>
-  {% endfor %}
-  </tbody>
-</table>
-{% include "base/_pagination.html" %}
+    </thead>
+    <tbody>
+    {% for obj in object_list %}
+      <tr>
+        <td>
+          <a href="{{ obj.get_absolute_url }}">{{ obj.name }}</a>
+        </td>
+        <td>
+          {% fa_text obj.user.username "user" link=obj.user.get_absolute_url %}
+        </td>
+        <td>
+          {% fa_text obj.modified|date "clock-o" %}
+        </td>
+        <td>
+          {{ obj.version }}
+        </td>
+      </tr>
+    {% empty %}
+      <tr>
+        <td class="warning">There are no algorithms available for this filter.</td>
+        <td class="warning"></td>
+        <td class="warning"></td>
+        <td class="warning"></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% include "base/_pagination.html" %}
+</div>

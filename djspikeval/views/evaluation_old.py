@@ -13,14 +13,14 @@ from djspikeval.forms import BatchEditForm
 from djspikeval.util import render_to
 
 Batch = apps.get_registered_model("djspikeval", "batch")
-Evaluation = apps.get_registered_model("djspikeval", "evaluation")
+Evaluation = apps.get_registered_model("djspikeval", "analysis")
 
 
-@render_to("djspikeval/evaluation/list.html")
+@render_to("djspikeval/analysis/list.html")
 def list(request, pk=None):
     """renders a list of available batches"""
 
-    # evaluation batch list
+    # analysis batch list
     bt_list = Batch.objects.filter(status=Batch.STATUS.public)
     bt_list_self = None
     if request.user.is_authenticated():
@@ -49,7 +49,7 @@ def list(request, pk=None):
             'search_terms': search_terms}
 
 
-@render_to("djspikeval/evaluation/detail.html")
+@render_to("djspikeval/analysis/detail.html")
 def detail(request, pk):
     """renders details of a particular batch"""
 
@@ -79,7 +79,7 @@ def detail(request, pk):
 
 @login_required
 def toggle(request, pk):
-    """toggle status for benchmark"""
+    """toggle status for dataset"""
 
     try:
         bt = Batch.objects.get(pk=pk)
@@ -87,7 +87,7 @@ def toggle(request, pk):
         bt.toggle()
         messages.info(request, 'Batch "%s" toggled to %s' % (bt, bt.status))
     except Exception, ex:
-        messages.error(request, 'Benchmark not toggled: %s' % ex)
+        messages.error(request, 'Dataset not toggled: %s' % ex)
     finally:
         return redirect(bt)
 
@@ -102,7 +102,7 @@ def delete(request, pk):
         Batch.objects.get(pk=pk).delete()
         messages.success(request, 'Batch "%s" deleted' % bt)
     except Exception, ex:
-        messages.error(request, 'Benchmark not deleted: %s' % ex)
+        messages.error(request, 'Dataset not deleted: %s' % ex)
     finally:
         return redirect('ev_list')
 
@@ -129,7 +129,7 @@ def zip(request, pk):
             '\n'.join([
                 'RESULTS FOR: %s\n' % str(bt),
                 'This zip archive was downloaded from http://spike.g-node.org.',
-                'It contains the results from a spike sorting evaluation made on the benchmark',
+                'It contains the results from a spike sorting analysis made on the dataset',
                 '\n  %s\n' % str(bt.benchmark),
                 'with the algorithm',
                 '\n  %s\n' % str(bt.algorithm),
@@ -205,9 +205,9 @@ def run(request, pk, dest=None):
         assert ev.batch.has_access(request.user), 'insufficient permissions'
         ev.clear_results()
         ev.run()
-        messages.info(request, 'Evaluation run has been scheduled: %s' % ev)
+        messages.info(request, 'Analysis run has been scheduled: %s' % ev)
     except Exception, ex:
-        messages.error(request, 'Evaluation run not scheduled: %s' % ex)
+        messages.error(request, 'Analysis run not scheduled: %s' % ex)
     finally:
         return redirect(dest or ev.batch)
 

@@ -31,7 +31,7 @@ class Algorithm(TimeStampedModel):
         default="0.1")
     description = models.TextField(
         blank=True)
-    owner = models.ForeignKey(
+    user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         default=None,
         blank=True)
@@ -54,7 +54,7 @@ class Algorithm(TimeStampedModel):
 
     # methods
     def __unicode__(self):
-        return unicode("{} ({})".format(self.name, self.version))
+        return unicode("Algorithm: {} ({})".format(self.name, self.version))
 
     @models.permalink
     def get_absolute_url(self):
@@ -65,7 +65,7 @@ class Algorithm(TimeStampedModel):
         return "algorithm:delete", (self.pk,), {}
 
     def has_access(self, user):
-        return self.owner == user or getattr(user, "is_superuser", False) is True
+        return self.user == user or getattr(user, "is_superuser", False) is True
 
 
 if __name__ == "__main__":

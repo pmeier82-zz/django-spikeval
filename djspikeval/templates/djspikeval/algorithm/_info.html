@@ -1,0 +1,52 @@
+{% load i18n %}
+{% load bootstrap3 %}
+{% load base %}
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <dl class="dl-horizontal">
+      <dt>
+        <strong>Owner:</strong>
+      </dt>
+      <dd>
+        {% fa_text obj.user "user" link=obj.user.get_absolute_url %}
+        {% ifequal obj.user user %}(you){% endifequal %}
+      </dd>
+      <dt>
+        <strong>Created:</strong>
+      </dt>
+      <dd>
+        {% fa_text obj.created|date "clock-o" %}
+      </dd>
+      <dt>
+        <strong>Modified:</strong>
+      </dt>
+      <dd>
+        {% fa_text obj.modified|date "clock-o" %}
+      </dd>
+      <dt>
+        <strong>Kind:</strong>
+      </dt>
+      <dd>
+        {% for tag in obj.kind.all %}
+          {% with tag|stringformat:"s" as tag_str %}
+            {% fa_text "&quot;"|add:tag_str|add:"&quot;" "tag" %}
+            {% if not forloop.last %}
+              <icon class="fa fa-caret-right"></icon>
+            {% endif %}
+          {% endwith %}
+        {% empty %}
+          &lt;untagged&gt;
+        {% endfor %}
+      </dd>
+    </dl>
+    <dl class="dl-horizontal">
+      <dt>
+        <strong>Description:</strong>
+      </dt>
+      <dd>
+        {{ obj.description|default:"no description" }}
+      </dd>
+    </dl>
+  </div>
+</div>

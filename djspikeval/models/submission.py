@@ -13,7 +13,7 @@ __author__ = "pmeier82"
 
 
 class Submission(StatusModel, TimeStampedModel):
-    """container for a set of evaluations submitted by a user for one benchmark"""
+    """container for a set of evaluations submitted by a user for one dataset"""
 
     # meta
     class Meta:
@@ -26,7 +26,7 @@ class Submission(StatusModel, TimeStampedModel):
     description = models.TextField(
         blank=True,
         null=True)
-    owner = models.ForeignKey(
+    user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         blank=True,
         help_text="The user associated with this submission.")
@@ -34,29 +34,29 @@ class Submission(StatusModel, TimeStampedModel):
         "djspikeval.Algorithm",
         default=1,
         help_text="The Algorithm associated with this submission.")
-    benchmark = models.ForeignKey(
-        "djspikeval.Benchmark",
-        help_text="The Benchmark associated with this submission.",
+    dataset = models.ForeignKey(
+        "djspikeval.Dataset",
+        help_text="The Dataset associated with this submission.",
         related_name="submission_set")
 
     # managers
-    asset_set = GenericRelation("base.asset")
+    asset_set = GenericRelation("base.Asset")
 
     @property
     def attachment_set(self):
-        return
+        return self.asset_set.filter(kind="attachment")
 
     # methods
     def __unicode__(self):
-        return "#{} {} @{}".format(self.pk, self.algorithm, self.benchmark)
+        return "#{} {} @{}".format(self.pk, self.algorithm, self.dataset)
 
     @models.permalink
     def get_absolute_url(self):
-        return "batch:detail", (self.pk,), {}
+        return "analysis:detail", (self.pk,), {}
 
     @models.permalink
     def get_delete_url(self):
-        return "batch:delete", (self.pk,), {}
+        return "analysis:delete", (self.pk,), {}
 
     def toggle(self):
         if self.status == self.STATUS.public:
@@ -66,10 +66,10 @@ class Submission(StatusModel, TimeStampedModel):
         self.save()
 
     def is_public(self):
-        return self.status == self.STATUS.public and self.benchmark.is_public()
+        return self.status == self.STATUS.public and self.dataset.is_public()
 
     def is_editable(self, user):
-        return self.owner == user or user.is_superuser
+        return self.user == user or getattr(user, "is_superuser", False) is True
 
     def is_accessible(self, user):
         return self.is_public() or self.is_editable(user)

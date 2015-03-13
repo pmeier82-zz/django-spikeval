@@ -1,0 +1,13 @@
+{% extends "djspikeval/dataset/base.html" %}
+
+{% load i18n %}
+
+{% block title %}{% trans "Delete" %} {{ block.super }}: &quot;{{ object.name }}&quot;{% endblock %}
+
+{% block content %}
+  {% if user.is_authenticated %}
+    {% include "base/_delete.html" with form_id="delete-dataset" %}
+  {% else %}
+    <p>NOT REGISTERED!</p>
+  {% endif %}
+{% endblock %}

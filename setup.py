@@ -10,7 +10,7 @@ if __name__ == "__main__":
         name="django-spikeval",
         version=VERSION,
 
-        description="Spikesorting evaluation package for the G-Node spike project.",
+        description="Spikesorting analysis package for the G-Node spike project.",
         long_description=open("README.rst").read(),
 
         url="https://github.com/pmeier82/django-spikeval",

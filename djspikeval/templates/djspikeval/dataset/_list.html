@@ -1,0 +1,80 @@
+{% load i18n %}
+{% load bootstrap3 %}
+{% load sorting_tags %}
+{% load base %}
+{% load spikeval %}
+
+<form class="form-inline" method="GET">
+  <div class="input-group input-group-sm">
+    <span class="input-group-addon"><i class="fa fa-search"></i></span>
+    <input id="scope" type="text" name="scope" class="form-control"
+           value="{{ scope|default_if_none:"" }}"/>
+    <span class="input-group-btn">
+      <button type="submit" class="btn btn-default" value="Search">
+        {% trans "Search" %}
+      </button>
+      {% if scope %}
+        <a class="btn btn-default" onclick="$('#scope').val('')">Clear</a>
+      {% endif %}
+    </span>
+  </div>
+</form>
+
+<div class="table-responsive">
+  <table class="table table-condensed table-hover">
+    <thead>
+    <tr>
+      {% sort_th "Name" "name" %}
+      {% sort_th "User" "user" %}
+      {% sort_th "Date" "created" %}
+      <th>#</th>
+      <th>Description</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for obj in object_list %}
+      <tr>
+        <td>
+          {% if obj.is_public %}
+            {% fa_text obj.name "eye" link=obj.get_absolute_url color="green" strong=True title=obj.description %}
+          {% else %}
+            {% fa_text obj.name "eye-slash" link=obj.get_absolute_url color="red" strong=True title=obj.description %}
+          {% endif %}
+        </td>
+        <td>
+          {% fa_text obj.user.username "user" link=obj.user.get_absolute_url %}
+        </td>
+        <td>
+          {% fa_text obj.modified|date "clock-o" %}
+        </td>
+        <td>
+          <a href="{% url "analysis:list-filter" obj.id %}">{{ obj.submission_count }}</a>
+        </td>
+        <td>
+          {{ obj.description|truncatewords:11|escape }}
+        </td>
+        <td>
+          <div class="btn-group btn-group-xs pull-left">
+            <a href="{% url "dataset:download" obj.id %}"
+               class="btn btn-default btn-xs">{% trans "download" %}</a>
+            {#          <a href="{% url "dataset:summary" obj.id %}"#}
+            {#             class="btn btn-default btn-xs">{% trans "summary" %}</a>#}
+            {% if obj|is_editable:user %}
+              <a href="{% url "dataset:toggle" obj.id %}"
+                 class="btn btn-default btn-xs">{% trans "toggle" %}</a>
+              <a href="{% url "dataset:delete" obj.id %}"
+                 class="btn btn-default btn-xs">{% trans "delete" %}</a>
+            {% endif %}
+          </div>
+        </td>
+      </tr>
+    {% empty %}
+      <tr>
+        <td class="warning" colspan="6">There are no datasets available for this filter.</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% include "base/_pagination.html" %}
+</div>

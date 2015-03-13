@@ -1,4 +1,4 @@
-{% extends "djspikeval/algorithm/base.html" %}
+{% extends "djspikeval/dataset/base.html" %}
 
 {% load i18n %}
 {% load bootstrap3 %}
@@ -13,7 +13,7 @@
       <span class="label label-default">Actions:</span>
 
       <div class="btn-group btn-group-xs">
-        {% action "Create Algorithm" icon="file" href="algorithm:create" %}
+        {% action "Create Dataset" icon="file" href="dataset:create" %}
         <a class="btn btn-default" onclick="$('#tagcloud').toggle();">
           <icon class="fa fa-tags"></icon>
           {% trans "Tagcloud" %}
@@ -24,11 +24,11 @@
   <section id="tagcloud" style="display:none;">
     <div class="panel panel-default center-block">
       <div class="panel-body">
-        {% include_tagcloud "djspikeval.algorithm:kind" %}
+        {% include_tagcloud "djspikeval.dataset:kind" %}
       </div>
     </div>
   </section>
   <section>
-    {% include "djspikeval/algorithm/_list.html" %}
+    {% include "djspikeval/dataset/_list.html" %}
   </section>
 {% endblock %}

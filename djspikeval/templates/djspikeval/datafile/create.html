@@ -1,4 +1,4 @@
-{% extends "djspikeval/algorithm/base.html" %}
+{% extends "djspikeval/datafile/base.html" %}
 
 {% load i18n %}
 
@@ -6,7 +6,7 @@
 
 {% block content %}
   {% if user.is_authenticated %}
-    {% include "base/_create.html" with form_id="create-algorithm" nomp=True %}
+    {% include "base/_create.html" with form_id="create-datafile" %}
   {% else %}
     <p>NOT REGISTERED!</p>
   {% endif %}

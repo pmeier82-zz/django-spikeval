@@ -1,0 +1,76 @@
+{% load i18n %}
+{% load base %}
+{% load spikeval %}
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <dl class="dl-horizontal">
+      <dt>
+        <strong>Owner:</strong>
+      </dt>
+      <dd>
+        {% fa_text obj.user "user" link=obj.user.get_absolute_url %}
+        {% ifequal obj.user user %}(you){% endifequal %}
+      </dd>
+      <dt>
+        <strong>Created:</strong>
+      </dt>
+      <dd>
+        {% fa_text obj.created|date "clock-o" %}
+      </dd>
+      <dt>
+        <strong>Modified:</strong>
+      </dt>
+      <dd>
+        {% fa_text obj.modified|date "clock-o" %}
+      </dd>
+      <dt>
+        <strong>Status:</strong>
+      </dt>
+      <dd>
+        {% if obj.is_public %}
+          <span data-toggle="tooltip" data-placement="right" title="{% trans "available for user download" %}">
+          {% fa_text obj.status "eye" color="green" strong=True %}
+          </span>
+        {% else %}
+          <span data-toggle="tooltip" data-placement="right" title="{% trans "for your eyes only" %}">
+            {% fa_text obj.status "eye-slash" color="red" strong=True %}
+          </span>
+        {% endif %}
+        {% if obj|is_editable:user %}
+          <a class="btn btn-default btn-xs" href="{% url "dataset:toggle" obj.id %}">{% trans "toggle" %}</a>
+        {% endif %}
+      </dd>
+      <dt>
+        <strong>Kind:</strong>
+      </dt>
+      <dd>
+        <ul class="list-inline" style="margin: auto;">
+          {% for kind in obj.kind.all %}
+            <li>{% fa_text kind "tag" %}</li>
+          {% empty %}
+            <li>&lt;untagged&gt;</li>
+          {% endfor %}
+        </ul>
+      </dd>
+      <dt>
+        <strong>Summary:</strong>
+      </dt>
+      <dd>
+        {#<a class="btn btn-info btn-xs" href="{% url "dataset:summary" obj.id %}">#}
+        <a class="btn btn-info btn-xs" href="#">
+          CLICK HERE TO VIEW COMPARISON OF DIFFERENT ANASYSES
+        </a>
+        <br>
+      </dd>
+    </dl>
+    <dl class="dl-horizontal">
+      <dt>
+        <strong>Description:</strong>
+      </dt>
+      <dd>
+        {{ obj.description|default:"no description" }}
+      </dd>
+    </dl>
+  </div>
+</div>

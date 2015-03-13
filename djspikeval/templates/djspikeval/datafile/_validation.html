@@ -1,0 +1,9 @@
+{% load i18n %}
+
+<h3>Validation Logs
+  <small>logs of the validation run</small>
+</h3>
+<strong>{% trans "Rawdata File" %}&nbsp;({{ obj.rd_file|default:"no rd_file!" }})</strong>
+<pre>{{ obj.valid_rd_log|default:"no log!" }}</pre>
+<strong>{% trans "Groundtruth File" %}&nbsp;({{ obj.gt_file|default:"no gt_file!" }})</strong>
+<pre>{{ obj.valid_gt_log|default:"no log!" }}</pre>

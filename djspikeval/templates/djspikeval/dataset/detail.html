@@ -1,0 +1,44 @@
+{% extends "djspikeval/dataset/base.html" %}
+
+{% load i18n %}
+{% load bootstrap3 %}
+{% load base %}
+{% load spikeval %}
+
+{% block heading %}
+  {% block title %}{{ block.super }}: &quot;{{ object.name }}&quot;{% endblock %}
+  <small>({{ object.status }})</small>
+{% endblock %}
+
+{% block content %}
+  {% if user.is_authenticated %}
+    <section class="well well-sm">
+      <span class="label label-default">Actions:</span>
+
+      <div class="btn-group btn-group-xs">
+        {% action "Submit" icon="tasks" href="analysis:create" pk=object.id %}
+        {% if object|is_editable:user %}
+          {% action "Update" icon="edit" href="dataset:update" pk=object.id %}
+          {% action "Delete" icon="remove" href="dataset:delete" pk=object.id %}
+          {% action "Create Datafile" icon="file" href="datafile:create" pk=object.id %}
+          {% action "Create Attachment" icon="file" href="asset:create" kind="attachment" model=object|cls_name pk=object.id %}
+        {% endif %}
+      </div>
+    </section>
+  {% endif %}
+  <section>
+    {% include "djspikeval/dataset/_info.html" with obj=object %}
+  </section>
+  <section>
+    <h3>Datafiles
+      <small>of this dataset.</small>
+    </h3>
+    <p>Datasets consist of one or more datafiles. You can download the whole dataset as a zip-archive by using the
+      &quot;download zip&quot; button below. Apply a spike sorting algorithm of your choice and upload the results back
+      to the service using the &quot;submit&quot; button above to get your analysis.</p>
+    {% include "djspikeval/dataset/_datafile.html" with obj=object %}
+  </section>
+  <section>
+    {% include "base/_attachments.html" with obj=object heading="dataset" %}
+  </section>
+{% endblock %}

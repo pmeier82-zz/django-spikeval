@@ -7,21 +7,35 @@ from django.contrib import admin
 __author__ = "pmeier82"
 
 Algorithm = apps.get_registered_model("djspikeval", "algorithm")
-Benchmark = apps.get_registered_model("djspikeval", "benchmark")
-Evaluation = apps.get_registered_model("djspikeval", "evaluation")
+Analysis = apps.get_registered_model("djspikeval", "analysis")
+Datafile = apps.get_registered_model("djspikeval", "datafile")
+Dataset = apps.get_registered_model("djspikeval", "dataset")
+Module = apps.get_registered_model("djspikeval", "module")
+Result = apps.get_registered_model("djspikeval", "result")
 Submission = apps.get_registered_model("djspikeval", "submission")
-Trial = apps.get_registered_model("djspikeval", "trial")
 
 
 class AlgorithmAdmin(admin.ModelAdmin):
     pass
 
 
-class BenchmarkAdmin(admin.ModelAdmin):
+class AnalysisAdmin(admin.ModelAdmin):
     pass
 
 
-class EvaluationAdmin(admin.ModelAdmin):
+class DatafileAdmin(admin.ModelAdmin):
+    pass
+
+
+class DatasetAdmin(admin.ModelAdmin):
+    pass
+
+
+class ModuleAdmin(admin.ModelAdmin):
+    pass
+
+
+class ResultAdmin(admin.ModelAdmin):
     pass
 
 
@@ -29,15 +43,13 @@ class SubmissionAdmin(admin.ModelAdmin):
     pass
 
 
-class TrialAdmin(admin.ModelAdmin):
-    pass
-
-
 admin.site.register(Algorithm, AlgorithmAdmin)
-admin.site.register(Benchmark, BenchmarkAdmin)
-admin.site.register(Evaluation, EvaluationAdmin)
+admin.site.register(Analysis, AnalysisAdmin)
+admin.site.register(Datafile, DatafileAdmin)
+admin.site.register(Dataset, DatasetAdmin)
+admin.site.register(Module, ModuleAdmin)
+admin.site.register(Result, ResultAdmin)
 admin.site.register(Submission, SubmissionAdmin)
-admin.site.register(Trial, TrialAdmin)
 
 if __name__ == "__main__":
     pass

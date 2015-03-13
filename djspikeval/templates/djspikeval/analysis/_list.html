@@ -1,0 +1,47 @@
+{% load i18n %}
+{% load base %}
+{% load spikeval %}
+
+<div class="table-responsive">
+  <table class="table table-condensed table-hover">
+    <thead>
+    <tr>
+      <th>{% trans "ID" %}</th>
+      <th>{% trans "User" %}</th>
+      <th>{% trans "Date" %}</th>
+      <th>{% trans "Dataset" %}</th>
+      <th>{% trans "Algorithm" %}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for obj in object_list %}
+      <tr>
+        <td>
+          {% if obj.is_public %}
+            {% fa_text obj "eye" link=obj.get_absolute_url color="green" strong=True title=obj.description %}
+          {% else %}
+            {% fa_text obj "eye-slash" link=obj.get_absolute_url color="red" strong=True title=obj.description %}
+          {% endif %}
+        </td>
+        <td>
+          {% fa_text obj.user "user" link=obj.user.get_absolute_url %}
+        </td>
+        <td>
+          {% fa_text obj.modified|date "clock-o" %}
+        </td>
+        <td>
+          <a href="{{ obj.dataset.get_absolute_url }}">{{ obj.dataset }}</a>
+        </td>
+        <td>
+          <a href="{{ obj.algorithm.get_absolute_url }}">{{ obj.algorithm }}</a>
+        </td>
+      </tr>
+    {% empty %}
+      <tr>
+        <td class="warning" colspan="5">There are no Analysis available for this filter.</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% include "base/_pagination.html" %}
+</div>

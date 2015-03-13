@@ -18,11 +18,11 @@ class AlgorithmForm(forms.ModelForm):
         self.user = kwargs.pop("user", None)
         super(AlgorithmForm, self).__init__(*args, **kwargs)
         if self.instance.id is None:
-            self.fields.pop("owner")
+            self.fields.pop("user")
 
     def save(self, *args, **kwargs):
         if self.user is not None:
-            self.instance.owner = self.user
+            self.instance.user = self.user
         return super(AlgorithmForm, self).save(*args, **kwargs)
 
 

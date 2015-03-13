@@ -9,14 +9,13 @@ from django.template.defaultfilters import slugify
 
 from ..util import get_pc
 
-
+Dataset = apps.get_registered_model("djspikeval", "dataset")
+Module = apps.get_registered_model("djspikeval", "module")
 User = apps.get_registered_model(*settings.AUTH_USER_MODEL.split("."))
-Benchmark = apps.get_registered_model("djspikeval", "benchmark")
-# Module = apps.get_registered_model("spike", "module")
 register = template.Library()
 
-## FILTER
 
+# filters
 @register.filter
 def ident(obj):
     """returns ident slug for use in templates
@@ -44,7 +43,7 @@ def is_editable(obj, user):
     if hasattr(obj, "is_editable"):
         return obj.is_editable(user)
     if hasattr(obj, "owner"):
-        return obj.owner == user
+        return obj.user == user
     else:
         return None
 
@@ -91,8 +90,7 @@ def populate(form, instance):
         return form
 
 
-## TAGS
-
+# tags
 @register.simple_tag
 def state_color(value):
     try:
@@ -140,30 +138,6 @@ def clear_search_url(request):
         return "%s?%s" % (request.path, getvars.urlencode())
     else:
         return request.path
-
-
-@register.inclusion_tag("djspikeval/_delete_old.html")
-def delete(obj, btn_name="delete", delete_url=None):
-    """deletes the object"""
-
-    if delete_url is None:
-        delete_url = getattr(obj, "get_delete_url", ("delete_url", "#"))
-    disabled = delete_url == "#"
-
-    return {
-        "obj": obj,
-        "btn_name": btn_name,
-        "delete_url": delete_url,
-        "disabled": disabled}
-
-
-@register.inclusion_tag("djspikeval/_attachments.html", takes_context=True)
-def appendix(context, obj):
-    """appendix for object"""
-
-    return {"obj": obj,
-            "appendix": obj.datafile_set.filter(kind="appendix"),
-            "user": context['user']}
 
 
 @register.inclusion_tag("djspikeval/_action.html")

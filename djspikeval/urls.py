@@ -15,42 +15,46 @@ patterns_algorithm = patterns(
     url(r"^(?P<pk>\d+)/delete/$", views.AlgorithmDelete.as_view(), name="delete"),
 )
 
-patterns_benchmark = patterns(
+patterns_dataset = patterns(
     "",
-    url(r"^$", views.BenchmarkList.as_view(), name="list"),
-    url(r"^create/$", views.BenchmarkCreate.as_view(), name="create"),
-    url(r"^(?P<pk>\d+)/$", views.BenchmarkDetail.as_view(), name="detail"),
-    url(r'^(?P<pk>\d+)/update/$', views.BenchmarkUpdate.as_view(), name="update"),
-    url(r'^(?P<pk>\d+)/delete/$', views.BenchmarkDelete.as_view(), name="delete"),
-    url(r"^(?P<pk>\d+)/toggle/$", views.BenchmarkToggle.as_view(), name="toggle"),
-    url(r"^(?P<pk>\d+)/download/$", views.BenchmarkDownload.as_view(), name="download"),
+    url(r"^$", views.DatasetList.as_view(), name="list"),
+    url(r"^create/$", views.DatasetCreate.as_view(), name="create"),
+    url(r"^(?P<pk>\d+)/$", views.DatasetDetail.as_view(), name="detail"),
+    url(r'^(?P<pk>\d+)/update/$', views.DatasetUpdate.as_view(), name="update"),
+    url(r'^(?P<pk>\d+)/delete/$', views.DatasetDelete.as_view(), name="delete"),
+    url(r"^(?P<pk>\d+)/toggle/$", views.DatasetToggle.as_view(), name="toggle"),
+    url(r"^(?P<pk>\d+)/download/$", views.DatasetDownload.as_view(), name="download"),
 )
 
-patterns_evaluation = patterns(
+patterns_analysis = patterns(
     "",
-    url(r"^$", views.SubmissionList.as_view(), name="list"),
-    url(r"^list/(?P<pk>\d+)$", views.SubmissionList.as_view(), name="list-filter"),
-    url(r"^create/(?P<pk>\d+)$", views.SubmissionCreate.as_view(), name="create"),
-    url(r"^(?P<pk>\d+)/$", views.SubmissionDetail.as_view(), name="detail"),
-    url(r"^(?P<pk>\d+)/update/$", views.SubmissionUpdate.as_view(), name="update"),
-    url(r"^(?P<pk>\d+)/delete/$", views.SubmissionDelete.as_view(), name="delete"),
+    url(r"^$", views.AnalysisList.as_view(), name="list"),
+    url(r"^list/(?P<pk>\d+)$", views.AnalysisList.as_view(), name="list-filter"),
+    url(r"^create/(?P<pk>\d+)$", views.AnalysisCreate.as_view(), name="create"),
+    url(r"^(?P<pk>\d+)/$", views.AnalysisDetail.as_view(), name="detail"),
+    url(r"^(?P<pk>\d+)/update/$", views.AnalysisUpdate.as_view(), name="update"),
+    url(r"^(?P<pk>\d+)/delete/$", views.AnalysisDelete.as_view(), name="delete"),
+    url(r"^(?P<pk>\d+)/toggle/$", views.AnalysisToggle.as_view(), name="toggle"),
+    url(r"^(?P<pk>\d+)/download/$", views.AnalysisDownload.as_view(), name="download"),
+    url(r"^(?P<pk>\d+)/start/$", views.AnalysisStart.as_view(), name="start"),
+    url(r"^(?P<pk>\d+)/start-all/$", views.AnalysisSubmissionStart.as_view(), name="start-all"),
 )
 
-patterns_trial = patterns(
+patterns_datafile = patterns(
     "",
-    url(r"create/(?P<pk>\d+)$", views.TrialCreate.as_view(), name="create"),
-    url(r'^(?P<pk>\d+)/$', views.TrialDetail.as_view(), name="detail"),
-    url(r'^(?P<pk>\d+)/update/$', views.TrialUpdate.as_view(), name="update"),
-    url(r'^(?P<pk>\d+)/delete/$', views.TrialDelete.as_view(), name="delete"),
-    url(r'^(?P<pk>\d+)/validate/$', views.TrialValidate.as_view(), name="validate"),
+    url(r"create/(?P<pk>\d+)$", views.DatafileCreate.as_view(), name="create"),
+    url(r'^(?P<pk>\d+)/$', views.DatafileDetail.as_view(), name="detail"),
+    url(r'^(?P<pk>\d+)/update/$', views.DatafileUpdate.as_view(), name="update"),
+    url(r'^(?P<pk>\d+)/delete/$', views.DatafileDelete.as_view(), name="delete"),
+    url(r'^(?P<pk>\d+)/validate/$', views.DatafileValidate.as_view(), name="validate"),
 )
 
 urlpatterns = patterns(
     "",
     url(r"^algorithm/", include(patterns_algorithm, namespace="algorithm")),
-    url(r"^benchmark/", include(patterns_benchmark, namespace="benchmark")),
-    url(r"^evaluation/", include(patterns_evaluation, namespace="evaluation")),
-    url(r"^trial/", include(patterns_trial, namespace="trial")),
+    url(r"^analysis/", include(patterns_analysis, namespace="analysis")),
+    url(r"^datafile/", include(patterns_datafile, namespace="datafile")),
+    url(r"^dataset/", include(patterns_dataset, namespace="dataset")),
 )
 
 if __name__ == "__main__":
