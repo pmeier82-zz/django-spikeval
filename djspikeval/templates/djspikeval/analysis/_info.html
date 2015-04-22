@@ -36,6 +36,24 @@
       <dd>
         {% fa_text obj.modified|date "clock-o" %}
       </dd>
+
+      <dt>
+        <strong>Status:</strong>
+      </dt>
+      <dd>
+        {% if obj.is_public %}
+          <span data-toggle="tooltip" data-placement="right" title="{% trans "available for user download" %}">
+          {% fa_text obj.status "eye" color="green" strong=True %}
+          </span>
+        {% else %}
+          <span data-toggle="tooltip" data-placement="right" title="{% trans "for your eyes only" %}">
+            {% fa_text obj.status "eye-slash" color="red" strong=True %}
+          </span>
+        {% endif %}
+        {% if obj|is_editable:user %}
+          <a class="btn btn-default btn-xs" href="{% url "analysis:toggle" obj.id %}">{% trans "toggle" %}</a>
+        {% endif %}
+      </dd>
     </dl>
     <dl class="dl-horizontal">
       <dt>

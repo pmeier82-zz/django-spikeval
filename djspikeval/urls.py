@@ -15,17 +15,6 @@ patterns_algorithm = patterns(
     url(r"^(?P<pk>\d+)/delete/$", views.AlgorithmDelete.as_view(), name="delete"),
 )
 
-patterns_dataset = patterns(
-    "",
-    url(r"^$", views.DatasetList.as_view(), name="list"),
-    url(r"^create/$", views.DatasetCreate.as_view(), name="create"),
-    url(r"^(?P<pk>\d+)/$", views.DatasetDetail.as_view(), name="detail"),
-    url(r'^(?P<pk>\d+)/update/$', views.DatasetUpdate.as_view(), name="update"),
-    url(r'^(?P<pk>\d+)/delete/$', views.DatasetDelete.as_view(), name="delete"),
-    url(r"^(?P<pk>\d+)/toggle/$", views.DatasetToggle.as_view(), name="toggle"),
-    url(r"^(?P<pk>\d+)/download/$", views.DatasetDownload.as_view(), name="download"),
-)
-
 patterns_analysis = patterns(
     "",
     url(r"^$", views.AnalysisList.as_view(), name="list"),
@@ -34,10 +23,10 @@ patterns_analysis = patterns(
     url(r"^(?P<pk>\d+)/$", views.AnalysisDetail.as_view(), name="detail"),
     url(r"^(?P<pk>\d+)/update/$", views.AnalysisUpdate.as_view(), name="update"),
     url(r"^(?P<pk>\d+)/delete/$", views.AnalysisDelete.as_view(), name="delete"),
-    url(r"^(?P<pk>\d+)/toggle/$", views.AnalysisToggle.as_view(), name="toggle"),
+    url(r"^(?P<pk>\d+)/toggle/$", views.SubmissionToggle.as_view(), name="toggle"),
     url(r"^(?P<pk>\d+)/download/$", views.AnalysisDownload.as_view(), name="download"),
     url(r"^(?P<pk>\d+)/start/$", views.AnalysisStart.as_view(), name="start"),
-    url(r"^(?P<pk>\d+)/start-all/$", views.AnalysisSubmissionStart.as_view(), name="start-all"),
+    url(r"^(?P<pk>\d+)/start-all/$", views.SubmissionStart.as_view(), name="start-all"),
 )
 
 patterns_datafile = patterns(
@@ -47,6 +36,17 @@ patterns_datafile = patterns(
     url(r'^(?P<pk>\d+)/update/$', views.DatafileUpdate.as_view(), name="update"),
     url(r'^(?P<pk>\d+)/delete/$', views.DatafileDelete.as_view(), name="delete"),
     url(r'^(?P<pk>\d+)/validate/$', views.DatafileValidate.as_view(), name="validate"),
+)
+
+patterns_dataset = patterns(
+    "",
+    url(r"^$", views.DatasetList.as_view(), name="list"),
+    url(r"^create/$", views.DatasetCreate.as_view(), name="create"),
+    url(r"^(?P<pk>\d+)/$", views.DatasetDetail.as_view(), name="detail"),
+    url(r'^(?P<pk>\d+)/update/$', views.DatasetUpdate.as_view(), name="update"),
+    url(r'^(?P<pk>\d+)/delete/$', views.DatasetDelete.as_view(), name="delete"),
+    url(r"^(?P<pk>\d+)/toggle/$", views.DatasetToggle.as_view(), name="toggle"),
+    url(r"^(?P<pk>\d+)/download/$", views.DatasetDownload.as_view(), name="download"),
 )
 
 urlpatterns = patterns(

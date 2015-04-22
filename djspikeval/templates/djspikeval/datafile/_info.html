@@ -15,13 +15,13 @@
         <strong>Created:</strong>
       </dt>
       <dd>
-        {% fa_text obj.created|date "clock-o" %}
+        {% fa_text obj.created|date "clock-o" title=obj.created|time %}
       </dd>
       <dt>
         <strong>Modified:</strong>
       </dt>
       <dd>
-        {% fa_text obj.modified|date "clock-o" %}
+        {% fa_text obj.modified|date "clock-o" title=obj.modified|time %}
       </dd>
       <dt>
         <strong>GT type:</strong>

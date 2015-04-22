@@ -20,7 +20,7 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 from numpy import nan, nansum, nanmax
 
-from ..forms import DatasetForm, DatasetSearchForm
+from ..forms import DatasetForm
 # from ..util import render_to, PLOT_COLORS
 
 __all__ = [

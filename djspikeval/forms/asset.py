@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 from django import forms
 from django.apps import apps
-from util import form_with_captcha
+from .util import form_with_captcha
 
 __all__ = ["AttachmentForm"]
 __author__ = "pmeier82"
@@ -11,7 +11,7 @@ __author__ = "pmeier82"
 Asset = apps.get_registered_model("base", "asset")
 
 
-# @form_with_captcha
+@form_with_captcha
 class AttachmentForm(forms.ModelForm):
     """`Attachment` model form"""
 
@@ -22,16 +22,13 @@ class AttachmentForm(forms.ModelForm):
 
     # constructor
     def __init__(self, *args, **kwargs):
-        self.obj = kwargs.pop("obj", None)
-        if self.obj is None:
+        obj = kwargs.pop("obj", None)
+        if obj is None:
             raise ValueError("no related object passed!")
         super(AttachmentForm, self).__init__(*args, **kwargs)
-
-    # interface
-    def save(self, *args, **kwargs):
-        self.instance.kind = "attachment"
-        self.instance.content_object = self.obj
-        return super(AttachmentForm, self).save(*args, **kwargs)
+        if self.instance.id is None:
+            self.instance.kind = "attachment"
+            self.instance.content_object = obj
 
 
 if __name__ == "__main__":

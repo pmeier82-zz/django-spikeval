@@ -7,6 +7,8 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from model_utils import Choices
 from model_utils.models import StatusModel, TimeStampedModel
+from .algorithm import Algorithm
+from .dataset import Dataset
 
 __all__ = ["Submission"]
 __author__ = "pmeier82"
@@ -31,11 +33,11 @@ class Submission(StatusModel, TimeStampedModel):
         blank=True,
         help_text="The user associated with this submission.")
     algorithm = models.ForeignKey(
-        "djspikeval.Algorithm",
+        Algorithm,
         default=1,
         help_text="The Algorithm associated with this submission.")
     dataset = models.ForeignKey(
-        "djspikeval.Dataset",
+        Dataset,
         help_text="The Dataset associated with this submission.",
         related_name="submission_set")
 
@@ -48,7 +50,7 @@ class Submission(StatusModel, TimeStampedModel):
 
     # methods
     def __unicode__(self):
-        return "#{} {} @{}".format(self.pk, self.algorithm, self.dataset)
+        return "{} @ {}".format(self.algorithm, self.dataset)
 
     @models.permalink
     def get_absolute_url(self):
@@ -66,7 +68,7 @@ class Submission(StatusModel, TimeStampedModel):
         self.save()
 
     def is_public(self):
-        return self.status == self.STATUS.public and self.dataset.is_public()
+        return self.status == Submission.STATUS.public and self.dataset.is_public()
 
     def is_editable(self, user):
         return self.user == user or getattr(user, "is_superuser", False) is True

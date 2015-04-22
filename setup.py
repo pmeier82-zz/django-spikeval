@@ -18,7 +18,7 @@ if __name__ == "__main__":
         author="Philipp Meier",
         author_email="pmeier82@gmail.com",
 
-        install_requires=["django>=1.7", "django-taggit>=0.12", "spikeval"],
+        install_requires=["django>=1.7", "spikeval"],
         packages=["djspikeval"],
         classifiers=[
             "Development Status :: 4 - Beta",

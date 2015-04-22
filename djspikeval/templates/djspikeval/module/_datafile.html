@@ -1,0 +1,87 @@
+{% load i18n %}
+{% load bootstrap3 %}
+{% load base %}
+{% load spikeval %}
+
+<div class="table-responsive">
+  <table class="table table-striped table-condensed">
+    <thead>
+    <tr>
+      <th>{% trans "Name" %}</th>
+      <th>{% trans "Created" %}</th>
+      <th>{{ obj.parameter }}</th>
+      <th>{% trans "Description" %}</th>
+      <th>{% trans "Download" %}</th>
+      {% ifequal obj.user user %}
+        <th>{% trans "Status" %}</th>
+      {% endifequal %}
+    </tr>
+    </thead>
+    <tbody>
+    {% for df in obj.datafile_set.all %}
+      <tr>
+        <td>
+          {% if obj|is_editable:user %}<a href="{{ df.get_absolute_url }}">{% endif %}
+          <nobr><strong>{{ df }}</strong></nobr>
+          {% if obj|is_editable:user %}</a>{% endif %}
+        </td>
+        <td>
+          {% fa_text df.created|date "clock-o" %}
+        </td>
+        <td>
+          {{ df.parameter }}
+        </td>
+        <td>
+          {{ df.description|truncatewords:15|escape }}
+        </td>
+        <td>
+          <nobr>
+            <a href="{{ df.rd_file.get_absolute_url }}">
+              {{ df.rd_file.name }} - {{ df.rd_file.data.size|filesizeformat }}
+            </a>
+          </nobr>
+          {% if df.gt_public or obj|is_editable:user %}
+            </br>
+            <nobr>
+              <a href="{{ df.gt_file.get_absolute_url }}">
+                {{ df.gt_file.name }} - {{ df.gt_file.data.size|filesizeformat }}
+              </a>
+            </nobr>
+          {% endif %}
+        </td>
+        {% if obj|is_editable:user %}
+          <td>
+            {% if df.is_valid %}
+              {% fa_text "VALID" "check-circle" color="green" strong=True %}
+            {% else %}
+              {% fa_text "INVALID" "exclamation-circle" color="red" strong=True %}
+            {% endif %}
+          </td>
+        {% endif %}
+      </tr>
+    {% empty %}
+      <tr>
+        <td class="warning" colspan="6">
+          No datafiles.
+          {% if obj|is_editable:user %}
+            You can add a new datafile by clicking on the "Create Datafile" button above.
+          {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+    {% if obj.datafile_set.all %}
+      <tr>
+        <td colspan="4"></td>
+        <td>
+          <a href="{% url "dataset:download" obj.id %}" class="btn btn-default btn-xs">
+            {% fa_text "download zip" "download" strong=True %}
+          </a>
+        </td>
+        {% ifequal obj.user user %}
+          <td></td>
+        {% endifequal %}
+      </tr>
+    {% endif %}
+    </tbody>
+  </table>
+</div>

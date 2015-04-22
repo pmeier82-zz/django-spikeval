@@ -6,26 +6,26 @@
   <div class="panel-body">
     <dl class="dl-horizontal">
       <dt>
-        <strong>Owner:</strong>
+        <strong>{% trans "User" %}:</strong>
       </dt>
       <dd>
         {% fa_text obj.user "user" link=obj.user.get_absolute_url %}
         {% ifequal obj.user user %}(you){% endifequal %}
       </dd>
       <dt>
-        <strong>Created:</strong>
+        <strong>{% trans "Created" %}:</strong>
       </dt>
       <dd>
-        {% fa_text obj.created|date "clock-o" %}
+        {% fa_text obj.created|date "clock-o" title=obj.created|time %}
       </dd>
       <dt>
-        <strong>Modified:</strong>
+        <strong>{% trans "Modified" %}:</strong>
       </dt>
       <dd>
-        {% fa_text obj.modified|date "clock-o" %}
+        {% fa_text obj.modified|date "clock-o" title=obj.modified|time %}
       </dd>
       <dt>
-        <strong>Status:</strong>
+        <strong>{% trans "Status" %}:</strong>
       </dt>
       <dd>
         {% if obj.is_public %}
@@ -42,34 +42,48 @@
         {% endif %}
       </dd>
       <dt>
-        <strong>Kind:</strong>
+        <strong>{% trans "Kind" %}:</strong>
       </dt>
       <dd>
         <ul class="list-inline" style="margin: auto;">
           {% for kind in obj.kind.all %}
             <li>{% fa_text kind "tag" %}</li>
           {% empty %}
-            <li>&lt;untagged&gt;</li>
+            <li>&lt;{% trans "untagged" %}&gt;</li>
           {% endfor %}
         </ul>
       </dd>
       <dt>
-        <strong>Summary:</strong>
+        <strong>{% trans "Summary" %}:</strong>
       </dt>
       <dd>
         {#<a class="btn btn-info btn-xs" href="{% url "dataset:summary" obj.id %}">#}
         <a class="btn btn-info btn-xs" href="#">
-          CLICK HERE TO VIEW COMPARISON OF DIFFERENT ANASYSES
+          CLICK HERE TO VIEW COMPARISON OF DIFFERENT ANALYSES
         </a>
         <br>
       </dd>
     </dl>
     <dl class="dl-horizontal">
       <dt>
-        <strong>Description:</strong>
+        <strong>{% trans "Description" %}:</strong>
       </dt>
       <dd>
         {{ obj.description|default:"no description" }}
+      </dd>
+    </dl>
+    <dl class="dl-horizontal">
+      <dt>
+        <strong>{% trans "Modules" %}:</strong>
+      </dt>
+      <dd>
+        <ul class="list-inline" style="margin: auto;">
+          {% for module in obj.module_enabled_set %}
+            <li>{% fa_text module "wrench" link=module.get_absolute_url %}</li>
+          {% empty %}
+            <li>&lt;{% trans "no modules!" %}&gt;</li>
+          {% endfor %}
+        </ul>
       </dd>
     </dl>
   </div>

@@ -67,6 +67,7 @@ class Migration(migrations.Migration):
                 ('gt_access', models.CharField(default='private', help_text='Access mode for the ground truth files if provided.', max_length=20, choices=[('private', 'private'), ('public', 'public')])),
             ],
             options={
+                'ordering': ['dataset', '-parameter'],
             },
             bases=(models.Model,),
         ),
@@ -80,13 +81,44 @@ class Migration(migrations.Migration):
                 ('status_changed', model_utils.fields.MonitorField(default=django.utils.timezone.now, verbose_name='status changed', monitor='status')),
                 ('name', models.CharField(help_text='The name will be used as an identifier for the Dataset. (character limit: 255)', max_length=255, verbose_name='name')),
                 ('description', models.TextField(help_text='Use this field to give a detailed description of the Dataset. Although there is no limit to the content of this field, you may want to provide an attached file if your space or editing requirements are not met. (character limit: none)', blank=True)),
-                ('parameter', models.CharField(default='No.', help_text='Individual Trials of the Dataset can have a parameter attached that can be used to order and distinguish the Trials. This may be a simulation or experimental parameter that has been varied systematically or just a numbering (default). (character limit: 255)', max_length=255)),
+                ('parameter', models.CharField(default='No.', help_text='Individual datafiles of the dataset can have a parameter attached that can be used to order and distinguish the datafiles. This may be a simulation or experimental parameter that has been varied systematically or just a numbering (default). (character limit: 255)', max_length=255)),
                 ('kind', taggit.managers.TaggableManager(to='taggit.Tag', through='taggit.TaggedItem', blank=True, help_text='A comma-separated list of tags classifying the Dataset.', verbose_name='Dataset Kind')),
-                ('user', models.ForeignKey(related_name='benchmarks', default=2, to=settings.AUTH_USER_MODEL, help_text='The user who contributed this Dataset.')),
+                ('user', models.ForeignKey(default=2, to=settings.AUTH_USER_MODEL, help_text='The user who contributed this dataset.')),
             ],
             options={
                 'ordering': ('-modified', 'name'),
                 'get_latest_by': 'modified',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Module',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created', model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, verbose_name='created', editable=False)),
+                ('modified', model_utils.fields.AutoLastModifiedField(default=django.utils.timezone.now, verbose_name='modified', editable=False)),
+                ('name', models.CharField(max_length=255)),
+                ('version', models.CharField(default='0.1', max_length=32)),
+                ('module_path', models.CharField(default='None', max_length=255)),
+                ('enabled', models.BooleanField(default=True)),
+                ('description', models.TextField(blank=True)),
+                ('dataset_set', models.ManyToManyField(related_name='module_set', null=True, to='djspikeval.Dataset', blank=True)),
+                ('parent', models.ForeignKey(related_name='children', blank=True, to='djspikeval.Module', null=True)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Result',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created', model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, verbose_name='created', editable=False)),
+                ('modified', model_utils.fields.AutoLastModifiedField(default=django.utils.timezone.now, verbose_name='modified', editable=False)),
+                ('analysis', models.ForeignKey(to='djspikeval.Analysis')),
+                ('module', models.ForeignKey(to='djspikeval.Module')),
+            ],
+            options={
             },
             bases=(models.Model,),
         ),
@@ -106,6 +138,10 @@ class Migration(migrations.Migration):
             options={
             },
             bases=(models.Model,),
+        ),
+        migrations.AlterUniqueTogether(
+            name='module',
+            unique_together=set([('name', 'version')]),
         ),
         migrations.AddField(
             model_name='datafile',
@@ -128,6 +164,10 @@ class Migration(migrations.Migration):
             name='submission',
             field=models.ForeignKey(to='djspikeval.Submission'),
             preserve_default=True,
+        ),
+        migrations.AlterOrderWithRespectTo(
+            name='analysis',
+            order_with_respect_to='datafile',
         ),
         migrations.AlterUniqueTogether(
             name='algorithm',

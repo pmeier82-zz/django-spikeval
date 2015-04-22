@@ -3,14 +3,16 @@
 from __future__ import unicode_literals
 from django import forms
 from django.apps import apps
-from util import form_with_captcha
+from .util import form_with_captcha
 
-__all__ = ["DatasetForm", "DatasetSearchForm"]
+__all__ = ["DatasetForm"]
 __author__ = "pmeier82"
 
-Dataset = apps.get_registered_model("djspikeval", "dataset")
+Dataset = apps.get_model("djspikeval", "dataset")
+Module = apps.get_model("djspikeval", "module")
 
 
+@form_with_captcha
 class DatasetForm(forms.ModelForm):
     """`Dataset` model form"""
 
@@ -35,10 +37,18 @@ class DatasetForm(forms.ModelForm):
         return super(DatasetForm, self).save(*args, **kwargs)
 
 
-class DatasetSearchForm(forms.Form):
-    """`Dataset` search form"""
+class DatasetModuleForm(forms.ModelForm):
+    """`Dataset` 2 `Module` form"""
 
-    name = forms.CharField(required=False)
+    # meta
+    class Meta:
+        model = Dataset
+        exclude = "__all__"
+
+    modules = forms.ModelMultipleChoiceField(queryset=Module.objects.all())
+
+    def save(self, commit=True):
+        super(DatasetModuleForm, self).save(commit=commit)
 
 
 if __name__ == "__main__":

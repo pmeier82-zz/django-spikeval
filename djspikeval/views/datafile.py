@@ -9,7 +9,6 @@ from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView, View
 
 from djspikeval.forms import DatafileForm
-from djspikeval.util import render_to
 
 __all__ = [
     "DatafileBaseView", "DatafileCreate", "DatafileDetail", "DatafileUpdate", "DatafileDelete", "DatafileValidate"]

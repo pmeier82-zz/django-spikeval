@@ -8,7 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from taggit.managers import TaggableManager
 from model_utils.models import StatusModel, TimeStampedModel
 
-from djspikeval.models.util import AccessChoices
+from .util import AccessChoices
 
 
 __all__ = ["Dataset"]
@@ -67,6 +67,10 @@ class Dataset(StatusModel, TimeStampedModel):
     @property
     def attachment_set(self):
         return self.asset_set.filter(kind="attachment")
+
+    @property
+    def module_enabled_set(self):
+        return self.module_set.filter(enabled=True)
 
     # methods
     def __unicode__(self):

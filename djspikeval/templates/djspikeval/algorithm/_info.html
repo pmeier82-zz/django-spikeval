@@ -28,16 +28,13 @@
         <strong>Kind:</strong>
       </dt>
       <dd>
-        {% for tag in obj.kind.all %}
-          {% with tag|stringformat:"s" as tag_str %}
-            {% fa_text "&quot;"|add:tag_str|add:"&quot;" "tag" %}
-            {% if not forloop.last %}
-              <icon class="fa fa-caret-right"></icon>
-            {% endif %}
-          {% endwith %}
-        {% empty %}
-          &lt;untagged&gt;
-        {% endfor %}
+        <ul class="list-inline" style="margin: auto;">
+          {% for kind in obj.kind.all %}
+            <li>{% fa_text kind "tag" %}</li>
+          {% empty %}
+            <li>&lt;untagged&gt;</li>
+          {% endfor %}
+        </ul>
       </dd>
     </dl>
     <dl class="dl-horizontal">

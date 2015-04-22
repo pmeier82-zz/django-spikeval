@@ -1,25 +1,26 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-from django.apps import apps
-from django.conf import settings
-from celery.task import task
 import scipy as sp
 from StringIO import StringIO
 
+from django.apps import apps
+from django.conf import settings
+from celery.task import task
+
 from spikeval.datafiles import read_gdf_sts, read_hdf5_arc
 from spikeval.log import Logger
+from ..signals import spike_validation_st, spike_validation_rd
 
-from ..signals import spike_validate_st, spike_validate_rd
 
-__all__ = ["spike_validate_rd", "spike_validate_st"]
+__all__ = ["spike_validation_rd", "spike_validation_st"]
 __author__ = "pmeier82"
 
 USE_CELERY = getattr(settings, "USE_CELERY", False)
 if getattr(settings, "CELERY_USE_PRIORITY", None) is not None:
     USE_CELERY = getattr(settings, "CELERY_USE_PRIORITY")
 
-Asset = apps.get_registered_model("base", "asset")
+Asset = apps.get_model("base", "asset")
 
 
 def validate_rawdata_file(sender, **kwargs):
@@ -29,7 +30,7 @@ def validate_rawdata_file(sender, **kwargs):
         task_validate_rawdata_file(sender.rd_file.id)
 
 
-spike_validate_rd.connect(validate_rawdata_file, dispatch_uid=__file__)
+spike_validation_rd.connect(validate_rawdata_file, dispatch_uid=__file__)
 
 
 def validate_spiketrain_file(sender, **kwargs):
@@ -39,7 +40,7 @@ def validate_spiketrain_file(sender, **kwargs):
         task_validate_spiketrain_file(sender.gt_file.id)
 
 
-spike_validate_st.connect(validate_spiketrain_file, dispatch_uid=__file__)
+spike_validation_st.connect(validate_spiketrain_file, dispatch_uid=__file__)
 
 # TASKS
 

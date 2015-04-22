@@ -1,0 +1,11 @@
+{% extends "djspikeval/module/base.html" %}
+
+{% load i18n %}
+
+{% block title %}{{ block.super }} {% trans "List" %}{% endblock %}
+
+{% block content %}
+  <section>
+    {% include "djspikeval/module/_list.html" %}
+  </section>
+{% endblock %}

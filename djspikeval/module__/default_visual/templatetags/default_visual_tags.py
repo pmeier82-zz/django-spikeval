@@ -1,7 +1,8 @@
-##---IMPORTS
+# -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
 from django import template
-from ..gnode_spike.apps.module.default_visual.models import ResultDefaultVisual
+from ..models import ResultDefaultVisual
 
 register = template.Library()
 
@@ -9,16 +10,16 @@ register = template.Library()
 
 KINDS = dict(ResultDefaultVisual.KIND)
 
-##---FILTERS
 
+# FILTER
 @register.filter
 def sort(qset):
     """return the sorted queryset"""
 
     return sorted(qset, cmp=lambda a, b: cmp(a.kind, b.kind))
 
-##---TAGS
 
+# TAGS
 @register.simple_tag
 def desc(obj):
     """returns a string describing the result plots"""
@@ -54,13 +55,12 @@ def desc(obj):
                          'the uploaded spike train file correctly. Also, if the spike sorter '
                          'splitted one cluster incorrectly into two (e.g. due to waveform change '
                          'over time) this is clearly visible in this plot.',
-        }.get(obj.kind)
+                     }.get(obj.kind)
     except:
-        desc_text = 'Could not produce description!'
+        desc_text = "Could not produce description!"
     finally:
-        return '<p>%s</p>' % desc_text
+        return "<p>%s</p>".format(desc_text)
 
-##---MAIN
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pass

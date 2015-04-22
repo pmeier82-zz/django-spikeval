@@ -4,7 +4,10 @@ from __future__ import unicode_literals
 from django.db import models
 from django.contrib.contenttypes.fields import GenericRelation
 from django.utils.translation import ugettext_lazy as _
+from django.utils import importlib
 from model_utils.models import TimeStampedModel
+from model_utils.managers import InheritanceManager
+from .dataset import Dataset
 
 __all__ = ["Module"]
 
@@ -12,7 +15,9 @@ __all__ = ["Module"]
 class Module(TimeStampedModel):
     """djspikeval module
 
-    modules are evaluation components that produce a partial evaluation result
+    `Modules` are evaluation components that produce partial evaluation results. This entity is
+     the glue between `djspikeval` and `spikeval` as it will load the `spikeval` modules into
+     django context for execution.
     """
 
     # meta
@@ -26,19 +31,21 @@ class Module(TimeStampedModel):
         blank=False)
     version = models.CharField(
         max_length=32,
+        blank=False,
         default="0.1")
-    path = models.CharField(
+    module_path = models.CharField(
         max_length=255,
-        unique=True,
-        blank=False)
+        blank=False,
+        default="None")
     enabled = models.BooleanField(
         default=True)
     description = models.TextField(
         blank=True)
-    dataset = models.ManyToManyField(
-        "djspikeval.Dataset",
+    dataset_set = models.ManyToManyField(
+        Dataset,
         blank=True,
-        null=True)
+        null=True,
+        related_name="module_set")
     parent = models.ForeignKey(
         "self",
         related_name="children",
@@ -55,6 +62,17 @@ class Module(TimeStampedModel):
     # methods
     def __unicode__(self):
         return unicode("Module: {} ({})".format(self.name, self.version))
+
+    # interface
+    def get_module_cls(self):
+        try:
+            module_pkg = importlib.import_module(self.module_path)
+            return module_pkg.Module
+        except ImportError:
+            return None
+
+    def get_result_template(self):
+        return "{}/result.html".format(self.module_path)
 
 
 if __name__ == "__main__":

@@ -6,6 +6,8 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.utils.translation import ugettext_lazy as _
 from model_utils.models import TimeStampedModel
 from model_utils.managers import InheritanceManager
+from .analysis import Analysis
+from .module import Module
 
 __all__ = ["Result"]
 
@@ -21,8 +23,8 @@ class Result(TimeStampedModel):
         app_label = "djspikeval"
 
     # fields
-    analysis = models.ForeignKey('djspikeval.Analysis')
-    module = models.ForeignKey("djspikeval.Module")
+    analysis = models.ForeignKey(Analysis)
+    module = models.ForeignKey(Module)
 
     # managers
     objects = InheritanceManager()
@@ -36,16 +38,16 @@ class Result(TimeStampedModel):
             return None
 
     @property
-    def batch(self):
+    def submission(self):
         try:
             return self.analysis.submission
         except:
             return None
 
     @property
-    def benchmark(self):
+    def dataset(self):
         try:
-            return self.analysis.trial.benchmark
+            return self.analysis.trial.dataset
             # return self.analysis.batch.dataset
         except:
             return None

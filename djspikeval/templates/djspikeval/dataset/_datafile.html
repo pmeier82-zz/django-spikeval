@@ -26,7 +26,7 @@
           {% if obj|is_editable:user %}</a>{% endif %}
         </td>
         <td>
-          {% fa_text df.created|date "clock-o" %}
+          {% fa_text df.created|date "clock-o" title=df.created|time %}
         </td>
         <td>
           {{ df.parameter }}
@@ -73,7 +73,7 @@
       <tr>
         <td colspan="4"></td>
         <td>
-          <a href="{% url "dataset:download" obj.id %}" class="btn btn-default btn-xs">
+          <a href="{% url "dataset:download" obj.id %}" class="btn btn-primary btn-xs">
             {% fa_text "download zip" "download" strong=True %}
           </a>
         </td>

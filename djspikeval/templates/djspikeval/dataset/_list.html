@@ -46,7 +46,7 @@
           {% fa_text obj.user.username "user" link=obj.user.get_absolute_url %}
         </td>
         <td>
-          {% fa_text obj.modified|date "clock-o" %}
+          {% fa_text obj.created|date "clock-o" title=obj.created|time %}
         </td>
         <td>
           <a href="{% url "analysis:list-filter" obj.id %}">{{ obj.submission_count }}</a>

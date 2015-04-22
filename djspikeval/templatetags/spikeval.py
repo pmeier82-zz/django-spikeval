@@ -9,9 +9,9 @@ from django.template.defaultfilters import slugify
 
 from ..util import get_pc
 
-Dataset = apps.get_registered_model("djspikeval", "dataset")
-Module = apps.get_registered_model("djspikeval", "module")
-User = apps.get_registered_model(*settings.AUTH_USER_MODEL.split("."))
+Dataset = apps.get_model("djspikeval", "dataset")
+Module = apps.get_model("djspikeval", "module")
+User = apps.get_model(*settings.AUTH_USER_MODEL.split("."))
 register = template.Library()
 
 

@@ -25,7 +25,7 @@ from djspikeval.forms import SubmissionForm
 
 __all__ = [
     "AnalysisBaseView", "AnalysisList", "AnalysisCreate", "AnalysisDetail", "AnalysisUpdate", "AnalysisDelete",
-    "AnalysisDownload", "AnalysisToggle", "AnalysisSubmissionStart", "AnalysisStart"]
+    "AnalysisDownload", "SubmissionToggle", "SubmissionStart", "AnalysisStart"]
 __author__ = "pmeier82"
 
 Analysis = apps.get_registered_model("djspikeval", "analysis")
@@ -92,33 +92,35 @@ class AnalysisDownload(AnalysisBaseView, View):
             return redirect("analysis:list")
 
 
-class AnalysisToggle(AnalysisBaseView, View):
-    """toggle analysis submission visibility"""
+class SubmissionToggle(AnalysisBaseView, View):
+    """toggle submission visibility"""
 
     def get(self, request, *args, **kwargs):
         try:
             obj = get_object_or_404(Submission, pk=self.kwargs["pk"])
             assert obj.is_accessible(self.request.user), "insufficient permissions"
+            assert obj.dataset.is_public(), "cannot disclose analysis for undisclosed dataset!"
             obj.toggle()
-            messages.info(self.request, "Analysis \"%s\" toggled to %s" % (obj, obj.status))
+            messages.info(self.request, "Analysis \"{}\" toggled to {}".format(obj.id, obj.status))
         except Exception, ex:
-            messages.error(self.request, "Analysis not toggled: %s" % ex)
+            messages.error(self.request, "Analysis not toggled: {}".format(ex))
             obj = "analysis:list"
         finally:
             return redirect(obj)
 
 
-class AnalysisSubmissionStart(AnalysisBaseView, View):
+class SubmissionStart(AnalysisBaseView, View):
     """start analysis of the whole submission"""
 
     def get(self, request, *args, **kwargs):
         try:
             obj = get_object_or_404(Submission, pk=self.kwargs["pk"])
             assert obj.is_accessible(self.request.user), "insufficient permissions"
-            obj.start()
-            messages.info(self.request, "Analysis started!")
+            for ana in obj.analysis_set.all():
+                ana.start()
+            messages.info(self.request, "Analyses started!")
         except Exception, ex:
-            messages.error(self.request, "Analysis not restarted: %s" % ex)
+            messages.error(self.request, "Analyses not restarted: %s" % ex)
             obj = "analysis:list"
         finally:
             return redirect(obj)
@@ -137,7 +139,7 @@ class AnalysisStart(AnalysisBaseView, View):
             messages.error(self.request, "Analysis not started: %s" % ex)
             obj = "analysis:list"
         finally:
-            return redirect(obj)
+            return redirect(obj.submission)
 
 
 if __name__ == "__main__":

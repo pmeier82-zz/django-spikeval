@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from model_utils.models import TimeStampedModel
 from model_utils import Choices
-from .signals import spike_validate_st, spike_validate_rd
+
+from .dataset import Dataset
+from ..signals import spike_validation_st, spike_validation_rd
 
 
 __all__ = ["Datafile"]
@@ -32,6 +35,7 @@ class Datafile(TimeStampedModel):
     class Meta:
         app_label = "djspikeval"
         unique_together = ("dataset", "parameter")
+        ordering = ["dataset", "-parameter"]
         # TODO: does this really make sense?
 
     # choices
@@ -74,7 +78,7 @@ class Datafile(TimeStampedModel):
         max_length=20,
         help_text="Access mode for the ground truth files if provided.")
     dataset = models.ForeignKey(
-        "djspikeval.Dataset",
+        Dataset,
         help_text="The Dataset associated with this Datafile.")
 
     # managers
@@ -146,9 +150,9 @@ class Datafile(TimeStampedModel):
 
     def validate(self):
         if self.rd_file:
-            spike_validate_rd.send_robust(sender=self)
+            spike_validation_rd.send_robust(sender=self)
         if self.gt_file:
-            spike_validate_st.send_robust(sender=self)
+            spike_validation_st.send_robust(sender=self)
 
 
 if __name__ == "__main__":

@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 from django import forms
 from django.apps import apps
+from .util import form_with_captcha
 
 __all__ = ["DatafileForm"]
 __author__ = "pmeier82"
@@ -12,7 +13,11 @@ Datafile = apps.get_registered_model("djspikeval", "datafile")
 Dataset = apps.get_registered_model("djspikeval", "dataset")
 
 
+@form_with_captcha
 class DatafileForm(forms.ModelForm):
+    """`Datafile` model form"""
+
+    # meta
     class Meta:
         model = Datafile
         exclude = ("created", "modified", "valid_rd_log", "valid_gt_log")
@@ -55,6 +60,7 @@ class DatafileForm(forms.ModelForm):
             if self.cleaned_data["rd_upload"]:
                 rd_file = Asset(
                     name=self.cleaned_data["rd_upload"].name,
+                    data_orig_name=self.cleaned_data["rd_upload"].name,
                     data=self.cleaned_data["rd_upload"],
                     kind="rd_file",
                     content_object=tr)

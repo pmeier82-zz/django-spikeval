@@ -1,11 +1,16 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+
 from django.db import models
 from django.contrib.contenttypes.fields import GenericRelation
 from model_utils import Choices
 from model_utils.models import StatusModel, TimeStampedModel
-from .signals import spike_evaluation, spike_validate_st
+
+from .datafile import Datafile
+from .submission import Submission
+from ..signals import spike_analysis, spike_validation_st
+
 
 __all__ = ["Analysis"]
 __author__ = "pmeier82"
@@ -24,6 +29,7 @@ class Analysis(StatusModel, TimeStampedModel):
     class Meta:
         app_label = "djspikeval"
         get_latest_by = "modified"
+        order_with_respect_to = "datafile"
 
     # choices
     STATUS = Choices("initial", "running", "success", "failure")
@@ -39,8 +45,8 @@ class Analysis(StatusModel, TimeStampedModel):
     valid_st_log = models.TextField(
         blank=True,
         null=True)
-    submission = models.ForeignKey("djspikeval.Submission")
-    datafile = models.ForeignKey("djspikeval.Datafile")
+    submission = models.ForeignKey(Submission)
+    datafile = models.ForeignKey(Datafile)
 
     # managers
     asset_set = GenericRelation("base.Asset")
@@ -87,11 +93,11 @@ class Analysis(StatusModel, TimeStampedModel):
         except:
             pass
 
-    def run(self):
-        spike_evaluation.send_robust(sender=self)
+    def start(self):
+        spike_analysis.send_robust(sender=self)
 
     def validate(self):
-        spike_validate_st.send_robust(sender=self)
+        spike_validation_st.send_robust(sender=self)
 
 
 if __name__ == "__main__":
