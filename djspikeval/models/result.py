@@ -30,6 +30,9 @@ class Result(TimeStampedModel):
     objects = InheritanceManager()
 
     # interface
+    def __unicode__(self):
+        return unicode("{}: #{} ${}".format(self.__class__.__name__, self.analysis_id, self.module_id))
+
     @property
     def trial(self):
         try:
@@ -47,8 +50,7 @@ class Result(TimeStampedModel):
     @property
     def dataset(self):
         try:
-            return self.analysis.trial.dataset
-            # return self.analysis.batch.dataset
+            return self.analysis.datafile.dataset
         except:
             return None
 

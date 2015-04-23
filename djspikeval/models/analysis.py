@@ -63,7 +63,7 @@ class Analysis(StatusModel, TimeStampedModel):
         return unicode("Analysis #{}: {} << {}".format(self.pk, self.datafile, self.submission.algorithm))
 
     @property
-    def modules(self):
+    def modules_enabled(self):
         try:
             return self.datafile.dataset.module_set.filter(enabled=True)
         except:

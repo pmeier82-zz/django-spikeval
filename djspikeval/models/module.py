@@ -24,6 +24,7 @@ class Module(TimeStampedModel):
     class Meta:
         app_label = "djspikeval"
         unique_together = ("name", "version")
+        ordering = ("pk",)
 
     # fields
     name = models.CharField(

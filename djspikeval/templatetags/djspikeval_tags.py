@@ -9,6 +9,7 @@ from django.template.defaultfilters import slugify
 
 from ..util import get_pc
 
+Analysis = apps.get_model("djspikeval", "analysis")
 Dataset = apps.get_model("djspikeval", "dataset")
 Module = apps.get_model("djspikeval", "module")
 User = apps.get_model(*settings.AUTH_USER_MODEL.split("."))
@@ -88,6 +89,13 @@ def populate(form, instance):
         pass
     finally:
         return form
+
+
+@register.filter
+def result_set_for(obj, mod):
+    assert isinstance(obj, Analysis), "filter only works on analysis object!"
+    assert isinstance(mod, Module), "filter argument has to be a module object!"
+    return obj.result_set.filter(module=mod).select_subclasses()
 
 
 # tags

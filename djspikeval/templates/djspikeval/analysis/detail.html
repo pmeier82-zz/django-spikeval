@@ -2,8 +2,8 @@
 
 {% load i18n %}
 {% load bootstrap3 %}
-{% load base %}
-{% load spikeval %}
+{% load base_tags %}
+{% load djspikeval_tags %}
 
 {% block heading %}
   {% block title %}{{ block.super }} #{{ object.id }}{% endblock %}
@@ -35,7 +35,7 @@
       <small>per datafile results of this analysis</small>
     </h3>
     {% for ana in object.analysis_set.all %}
-      {% include "djspikeval/analysis/_detail.html" with obj=ana %}
+      {% include "djspikeval/analysis/_datafile.html" with obj=ana %}
     {% endfor %}
   </section>
 {% endblock %}
